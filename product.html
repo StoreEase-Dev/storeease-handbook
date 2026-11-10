@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Product · StoreEase Handbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@700&display=swap">
+<link rel="stylesheet" href="assets/handbook.css">
+</head>
+<body>
+<div class="frame">
+<aside class="side">
+<a class="brand" href="index.html"><b>St<i></i>reEase</b><span>Handbook</span></a>
+<nav class="nav" aria-label="Handbook pages">
+<div class="grp">Start</div>
+<a href="index.html">Start here</a>
+<div class="grp">The business</div>
+<a href="product.html" aria-current="page">The product</a>
+<a href="pricing.html">Plans & billing</a>
+<div class="grp">How it is built</div>
+<a href="architecture.html">Architecture</a>
+<a href="tenancy.html">Keeping stores apart</a>
+<a href="apps.html">The apps</a>
+<a href="backend.html">API & data</a>
+<div class="grp">Running it</div>
+<a href="deploy.html">Deploy & operate</a>
+<a href="local.html">Run it locally</a>
+<div class="grp">Reference</div>
+<a href="decisions.html">Decisions & open items</a>
+<a href="glossary.html">Glossary</a>
+</nav>
+</aside>
+<main>
+<header class="top">
+  <span class="eyebrow">The business</span>
+  <h1>The product</h1>
+  <p class="lead">A low-cost Shopify alternative for India. Built for people who sell from home on Instagram and WhatsApp, who need a real shop link without hiring an agency.</p>
+</header>
+
+<section>
+  <div class="sec-head"><h2>A store's life, start to finish</h2><p>This is the path the end-to-end tests walk every time.</p></div>
+  <div class="flow">
+    <div class="step"><b><span class="n">1</span> Sign up</b><span>Name, mobile, business name, shop link (permanent), email, password twice</span></div><span class="arr">→</span>
+    <div class="step"><b><span class="n">2</span> Verify email</b><span>A 6-digit code arrives by email. Until it is entered: no setting changes, products, publishing or plan</span></div><span class="arr">→</span>
+    <div class="step"><b><span class="n">3</span> Set up</b><span>Products and photos (or CSV import), categories, template, colours, logo</span></div><span class="arr">→</span>
+    <div class="step"><b><span class="n">4</span> Subscribe</b><span>Chai ₹499/month. A new store starts private ("coming soon")</span></div><span class="arr">→</span>
+    <div class="step g"><b><span class="n">5</span> Publish</b><span>Needs a paid plan. The shop goes live at name.storeease.in</span></div><span class="arr">→</span>
+    <div class="step"><b><span class="n">6</span> Orders</b><span>Shoppers log in with an emailed code and order. The owner gets an email</span></div><span class="arr">→</span>
+    <div class="step"><b><span class="n">7</span> Fulfil</b><span>Confirm, ship, deliver. The shopper gets an email at each step</span></div>
+  </div>
+  <div class="callout info" style="margin-top:14px"><b>Login picks up where you left off</b>Pressing <b>Login</b> on storeease.in while signed in goes straight to the dashboard of the last business used. <b>Sign out</b> forgets it. Only the shop's public name is remembered in the browser, never a token.</div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Pages for shops that aren't open</h2><p>A visitor never sees a bare error. These pages share the homepage's style: a flippable logo switch, a joke, and the footer basics.</p></div>
+  <div class="grid g3">
+    <div class="card"><span class="chip c-info" style="justify-self:start">no such shop</span><p>The address belongs to nobody. The page offers to sign up and take it.</p></div>
+    <div class="card"><span class="chip c-bad" style="justify-self:start">closed</span><p>Suspended by an admin or by billing. Says "temporarily closed"; never shows the reason or owner links.</p></div>
+    <div class="card"><span class="chip c-warn" style="justify-self:start">coming soon</span><p>A new, unpublished shop. Links the owner to Login.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>An order's journey</h2><p>One step at a time. Delivered and cancelled are final; nothing is ever hard-deleted.</p></div>
+  <figure class="fig" style="margin:0">
+    <svg viewBox="0 0 760 190" role="img" aria-label="Order status flow: pending, confirmed, shipped, delivered; cancelled from pending or confirmed">
+      <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="arrow"/></marker>
+      <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="arrow-m"/></marker></defs>
+      <rect x="10" y="30" width="140" height="56" rx="14" class="box"/><text x="80" y="55" text-anchor="middle" class="t-b">pending</text><text x="80" y="73" text-anchor="middle" class="t-xs">just placed</text>
+      <rect x="205" y="30" width="140" height="56" rx="14" class="box"/><text x="275" y="55" text-anchor="middle" class="t-b">confirmed</text><text x="275" y="73" text-anchor="middle" class="t-xs">store accepted</text>
+      <rect x="400" y="30" width="140" height="56" rx="14" class="box"/><text x="470" y="55" text-anchor="middle" class="t-b">shipped</text><text x="470" y="73" text-anchor="middle" class="t-xs">on its way</text>
+      <rect x="595" y="30" width="150" height="56" rx="14" class="box-g"/><text x="670" y="55" text-anchor="middle" class="t-b">delivered</text><text x="670" y="73" text-anchor="middle" class="t-xs">final · can be rated</text>
+      <path d="M152 58H201" class="wire" marker-end="url(#a1)"/><path d="M347 58H396" class="wire" marker-end="url(#a1)"/><path d="M542 58H591" class="wire" marker-end="url(#a1)"/>
+      <rect x="205" y="130" width="140" height="50" rx="14" class="box-r"/><text x="275" y="160" text-anchor="middle" class="t-b">cancelled</text>
+      <path d="M80 88 C80 150,150 155,201 155" class="wire-d" marker-end="url(#a2)"/><text x="40" y="128" class="t-xs">shopper or store</text>
+      <path d="M275 88V126" class="wire-d" marker-end="url(#a2)"/><text x="283" y="112" class="t-xs">store only</text>
+    </svg>
+    <figcaption>Shoppers can cancel only while pending; after that they contact the store. Checkout has no online payment: the store collects cash on delivery or UPI itself.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="sec-head"><h2>What an owner gets</h2></div>
+  <div class="grid g3">
+    <div class="card"><h3>📦 Catalogue</h3><ul><li>Products with photos, categories, featured items</li><li>Shop links are made from the name; nobody types one</li><li>Stock count per product</li><li>CSV import (with example rows), up to 500 rows</li></ul></div>
+    <div class="card"><h3>🧾 Orders</h3><ul><li>Status tabs, search, dates</li><li>Email on every new order</li><li>"Only N left" protection: never oversells</li></ul></div>
+    <div class="card"><h3>👥 Customers</h3><ul><li>Only people who ordered here; how often, total spent (delivered only)</li><li>Private notes, CSV export</li><li>Block an abusive customer</li></ul></div>
+    <div class="card"><h3>📊 Analytics</h3><ul><li>Money received vs expected, orders, customers</li><li>Best sellers, busiest hours, low stock</li><li>Always compared with the period before</li></ul></div>
+    <div class="card"><h3>🔐 Staff &amp; roles</h3><ul><li>Invite staff, give each one role</li><li>Presets: Manager, Shop assistant, Packer</li><li>No role = sees nothing</li></ul></div>
+    <div class="card"><h3>🎨 Look &amp; address</h3><ul><li>3 templates, own colours, font, logo (colours suggested from the logo)</li><li>Bigger preview before publishing; your logo shows in the dashboard sidebar</li><li>Own domain (e.g. shop.priya.com)</li></ul></div>
+    <div class="card"><h3>📒 Inventory add-on</h3><ul><li>Record sales from Instagram, WhatsApp, in person</li><li>Approvals for staff sales</li><li>Stock history ledger</li></ul></div>
+    <div class="card"><h3>⭐ Ratings</h3><ul><li>Stars only, 1 to 5</li><li>Only after a delivered order (verified purchase)</li><li>The store can't edit or hide them</li></ul></div>
+    <div class="card"><h3>💳 Billing</h3><ul><li>Plan, usage meters, invoices as PDF</li><li>Auto-pay by UPI or card</li><li><a href="pricing.html">Plans &amp; billing →</a></li></ul></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>What a shopper sees</h2></div>
+  <div class="flow">
+    <div class="step"><b>Browse</b><span>Home, catalogue, product pages in the store's template</span></div><span class="arr">→</span>
+    <div class="step"><b>Cart</b><span>Kept in the browser, per store</span></div><span class="arr">→</span>
+    <div class="step"><b>Log in</b><span>6-digit code by email. No passwords for shoppers</span></div><span class="arr">→</span>
+    <div class="step"><b>Checkout</b><span>Pick or add an address, place the order</span></div><span class="arr">→</span>
+    <div class="step g"><b>Track</b><span>Confirmation page, emails, "My orders"</span></div>
+  </div>
+  <p class="muted small" style="margin-top:12px">A shopper has <b>one StoreEase account</b>: the same name, phone and saved addresses at every shop. Login is still an emailed code on each shop's own address, and shoppers are told so ("Your details are saved with StoreEase and work in any StoreEase shop"). There is no guest checkout. <a href="tenancy.html">What a shop can and can't see &rarr;</a></p>
+</section>
+
+<section>
+  <div class="sec-head"><h2>What the StoreEase team sees</h2></div>
+  <div class="grid g2">
+    <div class="card"><h3>Businesses</h3><p>Search every store, see plan, add-ons, orders and revenue. Suspend (with a reason the owner is emailed), reactivate, delete (soft, restorable), switch add-ons on.</p></div>
+    <div class="card"><h3>Platform analytics</h3><p>MRR and ARR, new / expansion / churn, trial conversion by signup month, top businesses, stores at risk (no orders in 30 days, or orders halved).</p></div>
+    <div class="card"><h3>Setup requests</h3><p>Owners who bought done-for-you setup (₹1,299): their notes and photo link, a 48-hour target, Start / Mark live / Cancel.</p></div>
+    <div class="card"><h3>Out of scope for now</h3><p>Platform health dashboards, WhatsApp notifications, written reviews, shopper online payment. <a href="decisions.html">See why →</a></p></div>
+  </div>
+</section>
+
+<nav class="pager" aria-label="Next and previous page"><a href="index.html">← Start here</a><a href="pricing.html">Plans & billing →</a></nav>
+<footer class="foot">Built from the docs in storeease-backend, storeease-frontend, storeease-infra and storeease-global (main, 25 Oct 2026). When a page and a repo doc disagree, the repo doc wins; fix this page in <code>storeease-infra/handbook/</code>.</footer>
+</main>
+</div>
+</body>
+</html>

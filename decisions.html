@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Decisions &amp; Open Items · StoreEase Handbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@700&display=swap">
+<link rel="stylesheet" href="assets/handbook.css">
+</head>
+<body>
+<div class="frame">
+<aside class="side">
+<a class="brand" href="index.html"><b>St<i></i>reEase</b><span>Handbook</span></a>
+<nav class="nav" aria-label="Handbook pages">
+<div class="grp">Start</div>
+<a href="index.html">Start here</a>
+<div class="grp">The business</div>
+<a href="product.html">The product</a>
+<a href="pricing.html">Plans & billing</a>
+<div class="grp">How it is built</div>
+<a href="architecture.html">Architecture</a>
+<a href="tenancy.html">Keeping stores apart</a>
+<a href="apps.html">The apps</a>
+<a href="backend.html">API & data</a>
+<div class="grp">Running it</div>
+<a href="deploy.html">Deploy & operate</a>
+<a href="local.html">Run it locally</a>
+<div class="grp">Reference</div>
+<a href="decisions.html" aria-current="page">Decisions & open items</a>
+<a href="glossary.html">Glossary</a>
+</nav>
+</aside>
+<main>
+<header class="top">
+  <span class="eyebrow">Reference</span>
+  <h1>Decisions &amp; open items</h1>
+  <p class="lead">The choices that shape StoreEase, what's still undecided, and what was put off on purpose. Each decision keeps its id from the repo's log, so you can look up the full reasoning.</p>
+</header>
+
+<section>
+  <div class="sec-head"><h2>Where the full logs live</h2></div>
+  <div class="grid g4">
+    <div class="card"><span class="chip">Q1…Q99</span><h3>Backend</h3><p><code>docs/database-schema.md</code> §14</p></div>
+    <div class="card"><span class="chip">FQ1…FQ41</span><h3>Frontend</h3><p><code>docs/decisions.md</code></p></div>
+    <div class="card"><span class="chip">D-AWS · D-CI · D-SES</span><h3>Infra</h3><p><code>docs/decisions.md</code></p></div>
+    <div class="card"><span class="chip">dated list</span><h3>Homepage</h3><p><code>CLAUDE.md</code></p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Product decisions</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Decision</th><th>Id</th></tr></thead>
+    <tbody>
+      <tr><td><b>Shoppers never pay online through StoreEase.</b> The store collects COD or UPI itself; checkout says so</td><td>Q21</td></tr>
+      <tr><td><b>Shoppers log in with an emailed code</b>, no guest checkout. One StoreEase account across all shops; a shop sees only shoppers who ordered there; blocking is per shop</td><td>Q98 (replaces Q9), Q10, FQ38</td></tr>
+      <tr><td><b>New owners verify their email by a 6-digit code</b> before changing the store, adding products, publishing or paying. Earlier owners count as verified</td><td>Q95, FQ36</td></tr>
+      <tr><td><b>Nobody types a web address for a product or category</b>; it is made from the name. Category names are unique per store</td><td>Q97, FQ37</td></tr>
+      <tr><td><b>Login resumes the session</b>: pressing Login while signed in goes to the dashboard. Signup says "Your shop link" and asks for the password twice</td><td>FQ34, FQ35</td></tr>
+      <tr><td><b>Playful pages</b> for unknown, closed and unpublished shops; the dashboard keeps StoreEase colours and shows the store's logo "powered by StoreEase"</td><td>FQ39, FQ40</td></tr>
+      <tr><td><b>The cart lives in the browser</b>, not on the server (can be added later)</td><td>Q11</td></tr>
+      <tr><td><b>New stores are private</b> until the owner publishes, which needs a paid plan</td><td>Q85, FQ25</td></tr>
+      <tr><td><b>A store's address can't change</b> (it's in links, emails and cookies). A custom domain is the way to a new one</td><td>Q83, FQ24</td></tr>
+      <tr><td><b>Ratings are stars only, verified purchases only</b>; stores can't edit or hide them</td><td>Q13, Q36</td></tr>
+      <tr><td><b>Shoppers cancel only while pending</b>; stores from pending or confirmed</td><td>Q22</td></tr>
+      <tr><td><b>Real roles for staff</b>, one per person, a level per area; no role = no access</td><td>Q25</td></tr>
+      <tr><td><b>Inventory is an add-on</b>; website orders reduce stock for everyone for free</td><td>Q16-Q19</td></tr>
+      <tr><td><b>Plans Chai ₹499 / Samosa ₹999 / Full Thali ₹1,499</b>; only Chai on sale; limits checked only when adding. Inventory is the ₹199 "Bun maska" add-on, not part of Chai</td><td>Q87, Q88, Q99, FQ41</td></tr>
+      <tr><td><b>14-day free trial, then 7 days' grace</b> before suspension; the grace is free</td><td>Q48, Q53</td></tr>
+      <tr><td><b>Deleting a business is soft</b> and restorable; data kept, address reserved</td><td>Q40</td></tr>
+      <tr><td><b>No WhatsApp ordering or UPI on the homepage pitch</b>; the hero shows a storefront only</td><td>homepage</td></tr>
+    </tbody></table></div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Technical decisions</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Decision</th><th>Id</th></tr></thead>
+    <tbody>
+      <tr><td><b>Shared tables + tenant_id + Row-Level Security</b>, locked; a new store table gets its policy in the same migration</td><td>CLAUDE.md</td></tr>
+      <tr><td><b>The store comes from the request's address</b>, never from the client</td><td>#9, #23</td></tr>
+      <tr><td><b>One global identity per person</b>; access to a business is a membership</td><td>Q15</td></tr>
+      <tr><td><b>Static React apps (Vite)</b> instead of Next.js: nothing server-side runs on S3</td><td>FQ1</td></tr>
+      <tr><td><b>Templates are whole designs</b> in their own packages, loaded on demand</td><td>FQ4, FQ5</td></tr>
+      <tr><td><b>Login hand-over through a URL fragment</b>; tokens only in memory</td><td>FQ6, FQ7</td></tr>
+      <tr><td><b>Order and welcome mail go through an outbox</b> inside the same transaction</td><td>Q35</td></tr>
+      <tr><td><b>Going live with Razorpay = keys only</b> (plan ids kept per key mode)</td><td>Q94</td></tr>
+    </tbody></table></div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Infrastructure decisions</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Decision</th><th>Id</th></tr></thead>
+    <tbody>
+      <tr><td><b>One EC2 t3.micro for now</b> (API + Postgres); RDS and Elastic Beanstalk when development is complete</td><td>D-AWS2</td></tr>
+      <tr><td><b>Terraform</b>, one config file, state in S3</td><td>D-AWS1</td></tr>
+      <tr><td><b>Domain at GoDaddy, DNS in Route 53</b> so the wildcard and certificate are automatic</td><td>D-AWS3</td></tr>
+      <tr><td><b>Three CloudFront distributions</b>: homepage, apps, images</td><td>D-AWS5</td></tr>
+      <tr><td><b>A fixed handful of buckets</b>, never one per business</td><td>CLAUDE.md</td></tr>
+      <tr><td><b>Homepage in its own repo and bucket</b></td><td>FQ31</td></tr>
+      <tr><td><b>No SSH</b>; Session Manager only. Postgres and Mailpit never public</td><td>D-AWS6</td></tr>
+      <tr><td><b>Email goes out through Amazon SES</b>; the GoDaddy mailbox keeps receiving. One SPF and one DMARC record on the root, SES's SPF on <code>mail.</code></td><td>D-SES1</td></tr>
+      <tr><td><b>Only the app edge may be framed by its own origin</b> (the dashboard preview); homepage and uploads stay "nobody"</td><td>D-AWS7</td></tr>
+      <tr><td><b>Rollback = previous image</b>, never a reverted migration</td><td>D-CI4</td></tr>
+    </tbody></table></div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Open items</h2><p>Things someone has to decide or do.</p></div>
+  <div class="grid g2">
+    <div class="card bold"><span class="chip c-bad" style="justify-self:start">needs a decision</span><h3>Shopper online payment</h3><p>StoreEase's Razorpay account with Route payouts to stores (one KYC, StoreEase is merchant), or each store's own Razorpay keys (more onboarding per store)? Decide after beta.</p></div>
+    <div class="card"><span class="chip c-warn" style="justify-self:start">needs a decision</span><h3>Homepage vs app plans</h3><p>Decided for the app: Chai ₹499 / Samosa ₹999 / Full Thali ₹1,499, and "Bun maska" = the ₹199 inventory add-on. The homepage was kept as it is: "chai + bun maska" there means ₹499 + ₹1,299 done-for-you setup. Decide how the two should line up.</p></div>
+    <div class="card bold"><span class="chip c-bad" style="justify-self:start">needs a decision</span><h3>Trial length in the docs</h3><p>The backend runs a 14-day trial (Q48). The frontend log (FQ25) mentions a "7-day trial". Confirm 14 + 7 days' grace and fix FQ25.</p></div>
+    <div class="card"><span class="chip c-warn" style="justify-self:start">to do</span><h3>Razorpay end to end</h3><p>Ask Razorpay to enable Subscriptions on the test account, add the keys in SSM, run the checklist in <code>billing-setup.md</code>.</p></div>
+    <div class="card"><span class="chip c-warn" style="justify-self:start">to do</span><h3>SES production access</h3><p>SES is built (Terraform, DKIM, bounce topic). Re-run <code>bootstrap/</code>, apply, deploy, then ask AWS to lift the sandbox. Until it is granted, only verified addresses get mail.</p></div>
+    <div class="card"><span class="chip c-info" style="justify-self:start">later</span><h3>Bounces back into the app</h3><p>Bounces and complaints reach an email address through SNS, but the app does not read them yet, so it will keep mailing a dead address.</p></div>
+    <div class="card"><span class="chip c-info" style="justify-self:start">small ask</span><h3>Upload size limit</h3><p>A presigned photo upload enforces no maximum size. Add one before opening to the public.</p></div>
+    <div class="card"><span class="chip c-info" style="justify-self:start">later</span><h3>Erase a shopper</h3><p>One action that removes a person from every shop (permanent erasure is deferred, <code>next-phase.md</code>).</p></div>
+    <div class="card"><span class="chip c-warn" style="justify-self:start">to do</span><h3>Custom domains end to end</h3><p>Verification and routing are built. Missing: HTTPS per domain, automated with CloudFront's SaaS features (backend #108, infra#3).</p></div>
+    <div class="card"><span class="chip c-warn" style="justify-self:start">to do</span><h3>Tidy up after the first deploy</h3><p>Stop the old homepage server, delete the unused Route 53 zone, and revoke the old <code>gh_token</code>.</p></div>
+    <div class="card"><span class="chip c-warn" style="justify-self:start">to do</span><h3>Homepage contact details</h3><p>WhatsApp, email and Instagram are placeholders in <code>home.json</code>. Launch target: 31 Dec 2026.</p></div>
+    <div class="card"><span class="chip c-warn" style="justify-self:start">to do</span><h3>Load test on the server</h3><p>Prove 25 users at once with several API workers.</p></div>
+    <div class="card"><span class="chip c-info" style="justify-self:start">small backend asks</span><h3>From the frontend team</h3><p>Newest-first product sort (G10), error codes for lockout and signup clashes (G11), reserve the <code>dashboard</code> address (G12), resized images (G13).</p></div>
+    <div class="card"><span class="chip c-info" style="justify-self:start">phase 2</span><h3>Bigger infrastructure</h3><p>RDS + Elastic Beanstalk, monitoring, a staging environment, premium templates on higher plans.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Put off on purpose</h2><p>From <code>storeease-backend/docs/next-phase.md</code>. Each waits for a clear trigger.</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Feature</th><th>Build when</th></tr></thead>
+    <tbody>
+      <tr><td>Platform health monitoring</td><td>An incident goes unnoticed that it would have caught</td></tr>
+      <tr><td>Analytics scaling</td><td>A real store's dashboard is measured as slow</td></tr>
+      <tr><td>Written reviews</td><td>Stars alone aren't enough for shoppers to trust a store</td></tr>
+      <tr><td>WhatsApp notifications</td><td>Stores ask, or customers miss order emails often</td></tr>
+      <tr><td>Shopper online payment</td><td>The owner decides, after beta stores use subscriptions</td></tr>
+      <tr><td>Server-side cart, abandoned-cart recovery</td><td>Cross-device shopping or recovery becomes worth it</td></tr>
+      <tr><td>Invoice fonts (₹ sign, Hindi), store-to-customer invoices</td><td>An owner or accountant asks</td></tr>
+      <tr><td>Permanent erasure of deleted businesses</td><td>Before the first real deletion request</td></tr>
+      <tr><td>Asymmetric token signing</td><td>A second service must verify tokens</td></tr>
+    </tbody></table></div>
+</section>
+
+<nav class="pager" aria-label="Next and previous page"><a href="local.html">← Run it locally</a><a href="glossary.html">Glossary →</a></nav>
+<footer class="foot">Built from the docs in storeease-backend, storeease-frontend, storeease-infra and storeease-global (main, 25 Oct 2026). When a page and a repo doc disagree, the repo doc wins; fix this page in <code>storeease-infra/handbook/</code>.</footer>
+</main>
+</div>
+</body>
+</html>

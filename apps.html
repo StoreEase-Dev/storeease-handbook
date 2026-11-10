@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Apps · StoreEase Handbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@700&display=swap">
+<link rel="stylesheet" href="assets/handbook.css">
+</head>
+<body>
+<div class="frame">
+<aside class="side">
+<a class="brand" href="index.html"><b>St<i></i>reEase</b><span>Handbook</span></a>
+<nav class="nav" aria-label="Handbook pages">
+<div class="grp">Start</div>
+<a href="index.html">Start here</a>
+<div class="grp">The business</div>
+<a href="product.html">The product</a>
+<a href="pricing.html">Plans & billing</a>
+<div class="grp">How it is built</div>
+<a href="architecture.html">Architecture</a>
+<a href="tenancy.html">Keeping stores apart</a>
+<a href="apps.html" aria-current="page">The apps</a>
+<a href="backend.html">API & data</a>
+<div class="grp">Running it</div>
+<a href="deploy.html">Deploy & operate</a>
+<a href="local.html">Run it locally</a>
+<div class="grp">Reference</div>
+<a href="decisions.html">Decisions & open items</a>
+<a href="glossary.html">Glossary</a>
+</nav>
+</aside>
+<main>
+<header class="top">
+  <span class="eyebrow">How it is built</span>
+  <h1>The apps</h1>
+  <p class="lead">Four React apps share one code repository (<code>storeease-frontend</code>), plus the Astro homepage in its own. Every app is plain files: nothing renders on a server.</p>
+</header>
+
+<section>
+  <div class="sec-head"><h2>Pages per app</h2></div>
+  <div class="bars" role="list">
+    <div class="bar" role="listitem"><span>Dashboard</span><div class="t"><i style="width:100%"></i></div><b>17</b></div>
+    <div class="bar" role="listitem"><span>Account (login, signup…)</span><div class="t"><i style="width:65%"></i></div><b>11</b></div>
+    <div class="bar" role="listitem"><span>Storefront</span><div class="t"><i style="width:65%"></i></div><b>11</b></div>
+    <div class="bar" role="listitem"><span>Admin</span><div class="t"><i style="width:35%"></i></div><b>6</b></div>
+  </div>
+  <p class="muted small" style="margin-top:10px">Rows (including redirects and not-found pages) counted from <code>storeease-frontend/docs/routes.md</code>, which lists every page with its API calls and who may see it.</p>
+</section>
+
+<section>
+  <div class="sec-head"><h2>How the code is arranged</h2><p>Apps use shared packages; dependencies only point downwards. Storefront templates never use the dashboard's design system, so shops look nothing like the back office.</p></div>
+  <figure class="fig" style="margin:0">
+    <svg class="wide" viewBox="0 0 880 300" role="img" aria-label="Apps account, dashboard, admin use auth, ui, api, config packages; storefront uses storefront-core which lazy loads three templates">
+      <defs><marker id="d1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="arrow"/></marker>
+      <marker id="d2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="arrow-m"/></marker></defs>
+      <text x="20" y="28" class="t-s" font-weight="800">APPS</text>
+      <rect x="20" y="40" width="150" height="50" rx="12" class="box-g"/><text x="95" y="70" text-anchor="middle" class="t-b">account</text>
+      <rect x="190" y="40" width="150" height="50" rx="12" class="box-g"/><text x="265" y="70" text-anchor="middle" class="t-b">dashboard</text>
+      <rect x="360" y="40" width="150" height="50" rx="12" class="box-g"/><text x="435" y="70" text-anchor="middle" class="t-b">admin</text>
+      <rect x="640" y="40" width="200" height="50" rx="12" class="box-g"/><text x="740" y="70" text-anchor="middle" class="t-b">storefront</text>
+      <text x="20" y="148" class="t-s" font-weight="800">PACKAGES</text>
+      <rect x="20" y="160" width="110" height="46" rx="12" class="box"/><text x="75" y="188" text-anchor="middle" class="t-b">auth</text>
+      <rect x="145" y="160" width="110" height="46" rx="12" class="box"/><text x="200" y="188" text-anchor="middle" class="t-b">ui</text>
+      <rect x="270" y="160" width="110" height="46" rx="12" class="box"/><text x="325" y="188" text-anchor="middle" class="t-b">api</text>
+      <rect x="395" y="160" width="110" height="46" rx="12" class="box"/><text x="450" y="188" text-anchor="middle" class="t-b">config</text>
+      <rect x="640" y="160" width="200" height="46" rx="12" class="box"/><text x="740" y="182" text-anchor="middle" class="t-b">storefront-core</text><text x="740" y="198" text-anchor="middle" class="t-xs">cart · login · checkout</text>
+      <path d="M95 92 L80 156" class="wire" marker-end="url(#d1)"/><path d="M265 92 L205 156" class="wire" marker-end="url(#d1)"/><path d="M435 92 L330 156" class="wire" marker-end="url(#d1)"/>
+      <path d="M740 92 V156" class="wire" marker-end="url(#d1)"/><path d="M638 183 H509" class="wire-d" marker-end="url(#d2)"/><text x="530" y="176" class="t-xs">api, config</text>
+      <text x="560" y="248" class="t-s" font-weight="800">TEMPLATES (loaded on demand)</text>
+      <rect x="560" y="256" width="100" height="36" rx="10" class="box-i"/><text x="610" y="279" text-anchor="middle" class="t-xs">Clean Store</text>
+      <rect x="670" y="256" width="100" height="36" rx="10" class="box-i"/><text x="720" y="279" text-anchor="middle" class="t-xs">Modern D2C</text>
+      <rect x="780" y="256" width="96" height="36" rx="10" class="box-i"/><text x="828" y="279" text-anchor="middle" class="t-xs">Dark Futuristic</text>
+      <path d="M740 208 V252" class="wire-d" marker-end="url(#d2)"/>
+    </svg>
+    <figcaption>Dashboard features each live in their own folder (<code>apps/dashboard/src/features/&lt;area&gt;</code>) and are listed in one registry, so several people can add features without touching the same file.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="sec-head"><h2>The dashboard</h2><p>Calm version of the homepage look: ink sidebar, frost page, white cards, green buttons with ink text.</p></div>
+  <figure class="fig" style="margin:0"><img src="assets/dashboard-home.png" alt="Dashboard home of the demo store: greeting, orders to confirm, ship and deliver, money received, orders, money expected and customers for the last 30 days" width="1440" height="900" loading="lazy"><figcaption>The demo store's home page (seeded data).</figcaption></figure>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Three storefront templates</h2><p>Completely different designs, not recolours. A visitor downloads the shop engine plus only the one template the store uses. The owner's own colours, font and logo sit on top.</p></div>
+  <div class="grid g3">
+    <div class="card" style="border-top:6px solid #e9eef0"><span class="chip">minimal</span><h3>Clean Store</h3><p>Bright, lots of white space, restrained motion. Suits small catalogues.</p></div>
+    <div class="card" style="border-top:6px solid var(--green)"><span class="chip">vibrant</span><h3>Modern D2C</h3><p>Big imagery, campaign hero, quick add, sticky add-to-bag on phones.</p></div>
+    <div class="card" style="border-top:6px solid #10162e"><span class="chip">dark</span><h3>Dark Futuristic</h3><p>Dark surfaces, high contrast, accent glow, spotlight sections.</p></div>
+  </div>
+  <p class="muted small" style="margin-top:10px">Mobile Lighthouse: performance 95-98, accessibility 100 on every template. The designs are placeholders the owner may replace; swapping one is a new package plus one line.</p>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Brand</h2><p>Every colour comes from the logo, whose "o" is a toggle switched on: offline → online.</p></div>
+  <div class="sw">
+    <div><i style="background:#000c3f"></i><p><b>Ink #000c3f</b>Text, sidebar, dark bands</p></div>
+    <div><i style="background:#28bc5e"></i><p><b>Live green #28bc5e</b>Fills only, never text on light</p></div>
+    <div><i style="background:#147a3a"></i><p><b>Green text #147a3a</b>Green words on light</p></div>
+    <div><i style="background:#5fd37f"></i><p><b>Mint #5fd37f</b>Accents on ink</p></div>
+    <div><i style="background:#f7fbf8;border-bottom:1px solid var(--line)"></i><p><b>Frost #f7fbf8</b>Page background</p></div>
+  </div>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="card"><h3 style="font-family:var(--font-display);font-size:1.4rem">Bricolage 800</h3><p>Headlines and big numbers</p></div>
+    <div class="card"><h3 style="font-family:var(--font-body)">Manrope</h3><p>Everything else (the logo's own family)</p></div>
+    <div class="card"><h3 class="script" style="font-size:1.6rem">Caveat</h3><p>A few hand-written words, hover labels</p></div>
+  </div>
+  <div class="tbl" style="margin-top:16px"><table>
+    <thead><tr><th>Where</th><th>How loud</th></tr></thead>
+    <tbody>
+      <tr><td>Homepage</td><td><span class="chip c-ok">full playful</span> memes, stickers, switch that greys the page</td></tr>
+      <tr><td>Login, signup, passwords</td><td><span class="chip c-ok">full playful</span> hard shadows, marker words, no memes</td></tr>
+      <tr><td>Dashboard, admin</td><td><span class="chip">calm</span> same colours, fonts and shapes. Playful is ready behind one switch (<code>data-look="playful"</code>)</td></tr>
+      <tr><td>Storefronts</td><td><span class="chip c-info">the store's own</span> template + owner's colours</td></tr>
+    </tbody></table></div>
+  <p class="muted small" style="margin-top:10px">Rules: ink text on green buttons (7.5:1), never white on green (2.5:1, fails), never green text on light backgrounds. Don't recolour the logo's toggle. WCAG 2.2 AA everywhere, 44 px touch targets.</p>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Rules every page follows</h2></div>
+  <div class="grid g2">
+    <div class="card"><h3>Four states</h3><p>Every data view handles loading, empty, error (with retry) and data, plus every error code the API can send.</p></div>
+    <div class="card"><h3>Types from the API</h3><p>Never hand-write an API type. After a backend change: <code>npm run api:types</code>.</p></div>
+    <div class="card"><h3>Money and dates</h3><p>Paise in, paise out; formatted only on screen. Every date range is an India-time (IST) day.</p></div>
+    <div class="card"><h3>Never shown to shoppers</h3><p>Exact stock counts. Only "in stock", and "only N left" on a line that asks for too many.</p></div>
+  </div>
+</section>
+
+<nav class="pager" aria-label="Next and previous page"><a href="tenancy.html">← Keeping stores apart</a><a href="backend.html">API & data →</a></nav>
+<footer class="foot">Built from the docs in storeease-backend, storeease-frontend, storeease-infra and storeease-global (main, 25 Oct 2026). When a page and a repo doc disagree, the repo doc wins; fix this page in <code>storeease-infra/handbook/</code>.</footer>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Run It Locally · StoreEase Handbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@700&display=swap">
+<link rel="stylesheet" href="assets/handbook.css">
+</head>
+<body>
+<div class="frame">
+<aside class="side">
+<a class="brand" href="index.html"><b>St<i></i>reEase</b><span>Handbook</span></a>
+<nav class="nav" aria-label="Handbook pages">
+<div class="grp">Start</div>
+<a href="index.html">Start here</a>
+<div class="grp">The business</div>
+<a href="product.html">The product</a>
+<a href="pricing.html">Plans & billing</a>
+<div class="grp">How it is built</div>
+<a href="architecture.html">Architecture</a>
+<a href="tenancy.html">Keeping stores apart</a>
+<a href="apps.html">The apps</a>
+<a href="backend.html">API & data</a>
+<div class="grp">Running it</div>
+<a href="deploy.html">Deploy & operate</a>
+<a href="local.html" aria-current="page">Run it locally</a>
+<div class="grp">Reference</div>
+<a href="decisions.html">Decisions & open items</a>
+<a href="glossary.html">Glossary</a>
+</nav>
+</aside>
+<main>
+<header class="top">
+  <span class="eyebrow">Running it</span>
+  <h1>Run it locally</h1>
+  <p class="lead">Everything runs on one Windows laptop: the API and database, a test inbox, and all five websites behind one "gateway" that plays CloudFront's part.</p>
+</header>
+
+<section>
+  <div class="sec-head"><h2>Before the first run</h2></div>
+  <div class="grid g3">
+    <div class="card"><h3>Tools</h3><ul><li>Node 22.12+ and npm</li><li>Python + the backend's <code>.venv</code></li><li>PostgreSQL 17 running</li><li>Mailpit (<code>winget install axllent.mailpit</code>)</li></ul></div>
+    <div class="card"><h3>Backend once</h3><ul><li>Create the 3 database roles (<code>bootstrap/roles.sql</code>)</li><li>Copy <code>.env.example</code> → <code>.env</code></li><li><code>alembic upgrade head</code></li></ul></div>
+    <div class="card"><h3>Frontend once</h3><ul><li><code>npm ci</code></li><li>Copy <code>.env.example</code> → <code>.env.local</code></li><li>Homepage: <code>npm install</code></li></ul></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Three terminals</h2></div>
+  <div class="grid g3">
+    <div class="card bold"><span class="n">1</span><h3>Backend</h3><pre><code>cd storeease-backend
+$env:STOREFRONT_BASE_DOMAIN='localhost'
+$env:DASHBOARD_HOST='dashboard.localhost:8080'
+.\.venv\Scripts\uvicorn.exe app.main:app --port 8000</code></pre><p>API docs: <code>http://127.0.0.1:8000/docs</code></p></div>
+    <div class="card bold"><span class="n">2</span><h3>Frontend</h3><pre><code>cd storeease-frontend
+npm run dev</code></pre><p>All four apps + the gateway on 8080.</p></div>
+    <div class="card bold"><span class="n">3</span><h3>Homepage</h3><pre><code>cd storeease-global
+npm run dev:gateway</code></pre><p>Astro on 5104, shown through the gateway.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>How the gateway routes</h2><p>Chrome, Edge and Firefox send <code>*.localhost</code> to your own machine, so no hosts-file edits.</p></div>
+  <figure class="fig" style="margin:0">
+    <svg class="wide" viewBox="0 0 860 300" role="img" aria-label="Gateway on port 8080 routes api to backend 8000, root host to homepage 5104, dashboard host to account app, admin host to admin app, other hosts to storefront or dashboard">
+      <defs><marker id="e1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="arrow"/></marker></defs>
+      <rect x="10" y="110" width="170" height="80" rx="14" class="box"/><text x="95" y="142" text-anchor="middle" class="t-b">Your browser</text><text x="95" y="162" text-anchor="middle" class="t-xs">*.localhost:8080</text>
+      <rect x="240" y="100" width="170" height="100" rx="14" class="box-g"/><text x="325" y="140" text-anchor="middle" class="t-h">Gateway</text><text x="325" y="160" text-anchor="middle" class="t-s">port 8080</text><text x="325" y="178" text-anchor="middle" class="t-xs">CloudFront stand-in</text>
+      <path d="M182 150H236" class="wire" marker-end="url(#e1)"/>
+      <rect x="490" y="10" width="360" height="40" rx="10" class="box-w"/><text x="505" y="35" class="t-s"><tspan font-weight="800" style="fill:var(--fg)">/api/* any host</tspan> → backend :8000 (address kept)</text>
+      <rect x="490" y="60" width="360" height="40" rx="10" class="box"/><text x="505" y="85" class="t-s"><tspan font-weight="800" style="fill:var(--fg)">localhost</tspan> → homepage :5104</text>
+      <rect x="490" y="110" width="360" height="40" rx="10" class="box"/><text x="505" y="135" class="t-s"><tspan font-weight="800" style="fill:var(--fg)">dashboard.localhost</tspan> → account app :5100</text>
+      <rect x="490" y="160" width="360" height="40" rx="10" class="box"/><text x="505" y="185" class="t-s"><tspan font-weight="800" style="fill:var(--fg)">admin.localhost</tspan> → admin app :5103</text>
+      <rect x="490" y="210" width="360" height="40" rx="10" class="box"/><text x="505" y="235" class="t-s"><tspan font-weight="800" style="fill:var(--fg)">store.localhost/dashboard</tspan> → dashboard :5101</text>
+      <rect x="490" y="260" width="360" height="36" rx="10" class="box"/><text x="505" y="283" class="t-s"><tspan font-weight="800" style="fill:var(--fg)">store.localhost/…</tspan> → storefront :5102</text>
+      <path d="M412 130 L486 30" class="wire"/><path d="M412 140 L486 80" class="wire"/><path d="M412 150 L486 130" class="wire"/><path d="M412 160 L486 180" class="wire"/><path d="M412 170 L486 230" class="wire"/><path d="M412 180 L486 278" class="wire"/>
+    </svg>
+  </figure>
+  <div class="tbl" style="margin-top:16px"><table>
+    <thead><tr><th>Open</th><th>You get</th></tr></thead>
+    <tbody>
+      <tr><td><code>http://localhost:8080</code></td><td>Homepage. Sign up / Login go to the account app</td></tr>
+      <tr><td><code>http://dashboard.localhost:8080/login</code></td><td>Login and signup</td></tr>
+      <tr><td><code>http://demo-store.localhost:8080</code></td><td>The demo store's shop</td></tr>
+      <tr><td><code>http://demo-store.localhost:8080/dashboard</code></td><td>Its dashboard</td></tr>
+      <tr><td><code>http://admin.localhost:8080</code></td><td>Admin portal</td></tr>
+      <tr><td><code>http://127.0.0.1:8025</code></td><td>Mailpit: login codes, invites, resets</td></tr>
+    </tbody></table></div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Test data</h2></div>
+  <div class="grid g2">
+    <div class="card"><h3>A big demo store</h3><pre><code>psql "&lt;storeease_admin url&gt;" -f scripts/demo-data/seed_demo_store.sql</code></pre><p>Owner <code>owner.demo-store@example.com</code> / <code>demo-password-123</code>. Then run <code>ANALYZE</code> as the migrator, or some pages are slow until autovacuum catches up.</p></div>
+    <div class="card"><h3>A whole platform</h3><pre><code>psql "&lt;storeease_admin url&gt;" -v stores=40 -f scripts/demo-data/seed_platform.sql</code></pre><p>Stores <code>seed-001</code>… with 12 months of trials, payments, churn and orders, for the admin charts.</p></div>
+    <div class="card"><h3>A platform admin</h3><pre><code>python -m app.cli.admin create --email ops@example.com --name Ops</code></pre></div>
+    <div class="card"><h3>Switch on the inventory add-on</h3><pre><code>python -m app.cli.admin addon activate --tenant demo-store --addon inventory_management</code></pre></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Checks before a pull request</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Repo</th><th>Run</th></tr></thead>
+    <tbody>
+      <tr><td>backend</td><td><code>pytest</code> (expect 712 passing) · <code>alembic check</code></td></tr>
+      <tr><td>frontend</td><td><code>npm run typecheck</code> · <code>lint</code> · <code>test</code> · <code>build</code> · <code>e2e</code> (with dev running)</td></tr>
+      <tr><td>homepage</td><td><code>npm run build</code> · <code>npm test</code></td></tr>
+      <tr><td>infra</td><td><code>terraform fmt -recursive -check</code> · <code>terraform validate</code> · <code>node --test "modules/**/*.test.js"</code></td></tr>
+    </tbody></table></div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>When something's off</h2></div>
+  <div class="grid g3">
+    <div class="card"><h3>Every API call fails with 500</h3><p>Postgres is probably down: <code>/healthz</code> queries the database.</p></div>
+    <div class="card"><h3>"Store not found" locally</h3><p>Set <code>STOREFRONT_BASE_DOMAIN=localhost</code> for the backend.</p></div>
+    <div class="card"><h3>A staff member sees nothing</h3><p>They need a role. No role = no access, on purpose.</p></div>
+  </div>
+</section>
+
+<nav class="pager" aria-label="Next and previous page"><a href="deploy.html">← Deploy & operate</a><a href="decisions.html">Decisions & open items →</a></nav>
+<footer class="foot">Built from the docs in storeease-backend, storeease-frontend, storeease-infra and storeease-global (main, 25 Oct 2026). When a page and a repo doc disagree, the repo doc wins; fix this page in <code>storeease-infra/handbook/</code>.</footer>
+</main>
+</div>
+</body>
+</html>

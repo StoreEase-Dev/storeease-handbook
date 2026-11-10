@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plans &amp; Billing · StoreEase Handbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@700&display=swap">
+<link rel="stylesheet" href="assets/handbook.css">
+</head>
+<body>
+<div class="frame">
+<aside class="side">
+<a class="brand" href="index.html"><b>St<i></i>reEase</b><span>Handbook</span></a>
+<nav class="nav" aria-label="Handbook pages">
+<div class="grp">Start</div>
+<a href="index.html">Start here</a>
+<div class="grp">The business</div>
+<a href="product.html">The product</a>
+<a href="pricing.html" aria-current="page">Plans & billing</a>
+<div class="grp">How it is built</div>
+<a href="architecture.html">Architecture</a>
+<a href="tenancy.html">Keeping stores apart</a>
+<a href="apps.html">The apps</a>
+<a href="backend.html">API & data</a>
+<div class="grp">Running it</div>
+<a href="deploy.html">Deploy & operate</a>
+<a href="local.html">Run it locally</a>
+<div class="grp">Reference</div>
+<a href="decisions.html">Decisions & open items</a>
+<a href="glossary.html">Glossary</a>
+</nav>
+</aside>
+<main>
+<header class="top">
+  <span class="eyebrow">The business</span>
+  <h1>Plans &amp; billing</h1>
+  <p class="lead">Owners pay StoreEase monthly by auto-pay (UPI AutoPay or a card mandate) through Razorpay. Shoppers never pay through StoreEase: the store collects from them directly.</p>
+</header>
+
+<section>
+  <div class="sec-head"><h2>Plans</h2><p>Named after Indian snacks. Limits are checked only when something is added, so a store over its limit can still edit everything it has.</p></div>
+  <div class="grid g3">
+    <div class="card bold green"><span class="chip c-ok" style="justify-self:start">On sale</span><h3 style="font-size:1.5rem">Chai</h3><p><b style="font-size:1.6rem;color:var(--fg)">₹499</b> / month</p><ul><li>All 3 templates</li><li>Up to 50 products</li><li>Owner + 3 staff</li></ul></div>
+    <div class="card"><span class="chip" style="justify-self:start">Coming soon · phase 2</span><h3 style="font-size:1.5rem">Samosa</h3><p><b style="font-size:1.6rem;color:var(--fg)">₹999</b> / month</p><ul><li>All templates</li><li>Up to 250 products</li><li>Owner + 20 staff</li></ul></div>
+    <div class="card"><span class="chip" style="justify-self:start">Coming soon · phase 3</span><h3 style="font-size:1.5rem">Full Thali</h3><p><b style="font-size:1.6rem;color:var(--fg)">₹1,499</b> / month</p><ul><li>Everything in Samosa</li><li>A custom mobile app</li><li>Minimum 6 months</li></ul></div>
+  </div>
+  <div class="tbl" style="margin-top:18px"><table>
+    <thead><tr><th>Add-on</th><th>Price</th><th>What it does</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td><b>Inventory management</b> ("Bun maska")</td><td>₹199 / month</td><td>Record sales from other channels, approvals, stock ledger, channel analytics</td><td><span class="chip c-ok">available</span></td></tr>
+      <tr><td><b>Done-for-you store setup</b></td><td>₹1,299 once</td><td>The shop sends photos and a price list; StoreEase builds the store within 48 hours</td><td><span class="chip c-ok">available</span> (instant mode)</td></tr>
+      <tr><td><b>Custom storefront design</b></td><td>Later redesigns ₹1,499</td><td>A design made for one store. The first one needs Samosa paid 6 months upfront</td><td><span class="chip">phase 3</span></td></tr>
+    </tbody></table></div>
+  <div class="callout info" style="margin-top:14px"><b>Decided 25 Oct 2026</b>Chai ₹499, Samosa ₹999, Full Thali ₹1,499. Inventory management is the ₹199 "Bun maska" add-on; Chai does not include it. The homepage has not been updated: it still sells "chai + bun maska" as ₹499 + ₹1,299 setup, and the app and API still call the third plan "Biryani" until the rename merges.</div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>A subscription over time</h2><p>Every new store starts with a free 14-day trial. A billing "sweep" in the API checks every store regularly and sends the reminders.</p></div>
+  <h3 style="margin-bottom:10px">The happy path</h3>
+  <div class="flow">
+    <div class="step"><b>Day 0 · sign up</b><span>Trial starts. Store is private</span></div><span class="arr">→</span>
+    <div class="step"><b>Subscribe</b><span>Owner approves an auto-pay in Razorpay. First charge at trial end</span></div><span class="arr">→</span>
+    <div class="step g"><b>Paid · publish</b><span>Store goes live. Charged monthly, receipt email + PDF invoice</span></div>
+  </div>
+  <h3 style="margin:22px 0 10px">If nothing is set up by the trial's end</h3>
+  <div class="flow">
+    <div class="step"><b>3 days and 1 day before</b><span>Reminder emails</span></div><span class="arr">→</span>
+    <div class="step w"><b>Trial ends</b><span>7 days' grace, free. Reminder the day before suspension</span></div><span class="arr">→</span>
+    <div class="step r"><b>Suspended</b><span>Shop shows "temporarily closed". Owner can still sign in and pay</span></div><span class="arr">→</span>
+    <div class="step g"><b>Pays</b><span>Store reopens at once</span></div>
+  </div>
+  <h3 style="margin:22px 0 10px">If a monthly payment fails</h3>
+  <div class="flow">
+    <div class="step w"><b>Charge fails</b><span>Owner emailed. Razorpay retries 3 times over 3 days</span></div><span class="arr">→</span>
+    <div class="step w"><b>Razorpay gives up</b><span>"Update your payment method", 7 days to fix</span></div><span class="arr">→</span>
+    <div class="step r"><b>Suspended</b><span>New auto-pay also pays the overdue days</span></div>
+  </div>
+  <h3 style="margin:22px 0 10px">Cancelling and add-ons</h3>
+  <div class="grid g2">
+    <div class="card"><p><b style="color:var(--fg)">Cancel:</b> the store runs to the end of the paid month (reminder 3 days before), then closes. No refunds for part months.</p></div>
+    <div class="card"><p><b style="color:var(--fg)">Add-on on/off:</b> an approved auto-pay can't change amount, so the owner approves a new one. Turning on mid-month pays the remaining days upfront.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Two billing modes</h2><p>The app decides by itself, based on whether Razorpay keys are set.</p></div>
+  <div class="grid g2">
+    <div class="card bold"><span class="chip c-ok" style="justify-self:start">Running today</span><h3>Instant mode (no keys)</h3><p>Subscribe activates Chai for a month at once with a "manual" invoice. It renews itself every month, so testers are never cut off. Add-ons switch instantly. Nothing is charged. Billing shows a "test mode" banner.</p></div>
+    <div class="card bold"><span class="chip c-warn" style="justify-self:start">Ready, not yet tested for real</span><h3>Razorpay mode (keys set)</h3><p>Real auto-pay, webhooks drive every change, the sweep handles trials, failures and cancellations. Going live = put the live keys in AWS and redeploy the backend. Nothing else.</p></div>
+  </div>
+  <div class="callout bad" style="margin-top:14px"><b>Before testing real payments</b>The Razorpay test account has <b>Subscriptions switched off</b>: Razorpay answers 401 on plans and subscriptions. Ask Razorpay to enable it, then follow the checklist in <code>storeease-backend/docs/billing-setup.md</code>.</div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>How a payment flows through the system</h2></div>
+  <figure class="fig" style="margin:0">
+    <svg class="wide" viewBox="0 0 860 250" role="img" aria-label="Owner approves auto-pay in Razorpay; Razorpay sends webhooks to the API which updates subscriptions, invoices and payments and emails a receipt">
+      <defs><marker id="b1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="arrow"/></marker></defs>
+      <rect x="10" y="90" width="150" height="70" rx="14" class="box"/><text x="85" y="118" text-anchor="middle" class="t-b">Owner</text><text x="85" y="138" text-anchor="middle" class="t-xs">Billing page</text>
+      <rect x="230" y="20" width="170" height="70" rx="14" class="box"/><text x="315" y="48" text-anchor="middle" class="t-b">API</text><text x="315" y="68" text-anchor="middle" class="t-xs">POST /billing/subscribe</text>
+      <rect x="230" y="160" width="170" height="70" rx="14" class="box-i"/><text x="315" y="188" text-anchor="middle" class="t-b">Razorpay Checkout</text><text x="315" y="208" text-anchor="middle" class="t-xs">approve UPI / card</text>
+      <rect x="480" y="90" width="170" height="70" rx="14" class="box-i"/><text x="565" y="118" text-anchor="middle" class="t-b">Razorpay</text><text x="565" y="138" text-anchor="middle" class="t-xs">charges monthly</text>
+      <rect x="700" y="20" width="150" height="70" rx="14" class="box-g"/><text x="775" y="48" text-anchor="middle" class="t-b">Webhook</text><text x="775" y="68" text-anchor="middle" class="t-xs">signed, stored once</text>
+      <rect x="700" y="160" width="150" height="70" rx="14" class="box"/><text x="775" y="188" text-anchor="middle" class="t-b">Database</text><text x="775" y="208" text-anchor="middle" class="t-xs">subscription · invoice</text>
+      <path d="M160 110 L226 60" class="wire" marker-end="url(#b1)"/><text x="168" y="78" class="t-xs">1</text>
+      <path d="M315 92 V156" class="wire" marker-end="url(#b1)"/><text x="322" y="128" class="t-xs">2 checkout</text>
+      <path d="M402 190 L476 140" class="wire" marker-end="url(#b1)"/><text x="430" y="182" class="t-xs">3 approved</text>
+      <path d="M652 110 L696 70" class="wire" marker-end="url(#b1)"/><text x="660" y="84" class="t-xs">4 events</text>
+      <path d="M775 92 V156" class="wire" marker-end="url(#b1)"/><text x="782" y="128" class="t-xs">5 apply + email</text>
+    </svg>
+    <figcaption>Webhook URL: <code>https://dashboard.storeease.in/api/v1/webhooks/razorpay</code>, all <code>subscription.*</code> events. Every event is stored once by its id, so a redelivery never double-charges or double-counts.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Money rules</h2></div>
+  <div class="grid g3">
+    <div class="card"><h3>Paise, always</h3><p>Every amount is a whole number of paise (₹499 = 49,900). Formatted only for display.</p></div>
+    <div class="card"><h3>No GST yet</h3><p>Invoices say so while tax is 0. When GST starts, set the legal name and GSTIN in the backend settings.</p></div>
+    <div class="card"><h3>Gapless invoice numbers</h3><p>One global sequence, <code>INV-…</code>, for every invoice.</p></div>
+  </div>
+</section>
+
+<nav class="pager" aria-label="Next and previous page"><a href="product.html">← The product</a><a href="architecture.html">Architecture →</a></nav>
+<footer class="foot">Built from the docs in storeease-backend, storeease-frontend, storeease-infra and storeease-global (main, 25 Oct 2026). When a page and a repo doc disagree, the repo doc wins; fix this page in <code>storeease-infra/handbook/</code>.</footer>
+</main>
+</div>
+</body>
+</html>

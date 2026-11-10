@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Glossary · StoreEase Handbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@700&display=swap">
+<link rel="stylesheet" href="assets/handbook.css">
+</head>
+<body>
+<div class="frame">
+<aside class="side">
+<a class="brand" href="index.html"><b>St<i></i>reEase</b><span>Handbook</span></a>
+<nav class="nav" aria-label="Handbook pages">
+<div class="grp">Start</div>
+<a href="index.html">Start here</a>
+<div class="grp">The business</div>
+<a href="product.html">The product</a>
+<a href="pricing.html">Plans & billing</a>
+<div class="grp">How it is built</div>
+<a href="architecture.html">Architecture</a>
+<a href="tenancy.html">Keeping stores apart</a>
+<a href="apps.html">The apps</a>
+<a href="backend.html">API & data</a>
+<div class="grp">Running it</div>
+<a href="deploy.html">Deploy & operate</a>
+<a href="local.html">Run it locally</a>
+<div class="grp">Reference</div>
+<a href="decisions.html">Decisions & open items</a>
+<a href="glossary.html" aria-current="page">Glossary</a>
+</nav>
+</aside>
+<main>
+<header class="top">
+  <span class="eyebrow">Reference</span>
+  <h1>Glossary</h1>
+  <p class="lead">Words you'll meet in the docs, in plain language.</p>
+</header>
+
+<section>
+  <div class="sec-head"><h2>Business words</h2></div>
+  <div class="tbl"><table><tbody>
+    <tr><td><b>Tenant</b></td><td>One business on StoreEase. "Multi-tenant" = one app serving many businesses.</td></tr>
+    <tr><td><b>Owner / staff</b></td><td>The person who signed the business up, and the helpers they invite.</td></tr>
+    <tr><td><b>Storefront</b></td><td>The shop shoppers see at <code>name.storeease.in</code>.</td></tr>
+    <tr><td><b>Template</b></td><td>One of three complete shop designs (Clean Store, Modern D2C, Dark Futuristic).</td></tr>
+    <tr><td><b>Publish</b></td><td>Making a store visible. New stores show "coming soon" until then.</td></tr>
+    <tr><td><b>Shopper</b></td><td>A person who buys. One StoreEase account (email, name, phone, saved addresses) works at every shop; each shop sees only those who ordered there.</td></tr>
+    <tr><td><b>Slug</b></td><td>The web-friendly name in a link, like <code>masala-chai</code> in <code>/products/masala-chai</code>. Made from the product name, never typed.</td></tr>
+    <tr><td><b>Add-on</b></td><td>An extra on top of the plan: inventory management, done-for-you setup.</td></tr>
+    <tr><td><b>Instant mode</b></td><td>How billing behaves with no Razorpay keys: everything works, nothing is charged.</td></tr>
+    <tr><td><b>Auto-pay / mandate</b></td><td>The owner's standing permission (UPI AutoPay or card) for Razorpay to charge monthly.</td></tr>
+    <tr><td><b>Grace</b></td><td>The 7 days after a trial ends or a payment stops, before the store is suspended.</td></tr>
+    <tr><td><b>Suspended</b></td><td>Store closed to shoppers. The owner can still sign in and pay to reopen it.</td></tr>
+    <tr><td><b>MRR / ARR</b></td><td>Monthly / annual recurring revenue from paying stores. One-time charges don't count.</td></tr>
+    <tr><td><b>Churn</b></td><td>Paying stores (or revenue) lost in a period.</td></tr>
+    <tr><td><b>COD</b></td><td>Cash on delivery: how shoppers pay stores today, along with UPI.</td></tr>
+    <tr><td><b>Paise</b></td><td>1/100 of a rupee. All money is stored as whole paise.</td></tr>
+    <tr><td><b>IST</b></td><td>India Standard Time. Every report day is an IST day.</td></tr>
+  </tbody></table></div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Technical words</h2></div>
+  <div class="tbl"><table><tbody>
+    <tr><td><b>API</b></td><td>The backend service the websites talk to, under <code>/api/v1</code>.</td></tr>
+    <tr><td><b>RLS (Row-Level Security)</b></td><td>A PostgreSQL feature that hides other stores' rows on every query, automatically.</td></tr>
+    <tr><td><b>Migration</b></td><td>A versioned change to the database's structure (Alembic).</td></tr>
+    <tr><td><b>Host header</b></td><td>The address the browser asked for. The API picks the store from it.</td></tr>
+    <tr><td><b>OTP</b></td><td>One-time password: the 6-digit code shoppers get by email.</td></tr>
+    <tr><td><b>JWT / access token</b></td><td>A short-lived signed pass (15-30 min) that proves who you are.</td></tr>
+    <tr><td><b>Refresh token</b></td><td>A longer-lived secret in a locked cookie, used to get new access tokens.</td></tr>
+    <tr><td><b>Webhook</b></td><td>A call Razorpay makes to our API when something happens to a payment.</td></tr>
+    <tr><td><b>Outbox</b></td><td>A queue of emails saved with the order, sent by a background loop.</td></tr>
+    <tr><td><b>Sweep</b></td><td>A background loop that checks every store on a timer (billing, domains).</td></tr>
+    <tr><td><b>Monorepo / workspace</b></td><td>One repository holding several apps and shared packages.</td></tr>
+    <tr><td><b>SPA</b></td><td>Single-page app: plain files; the browser does the page changes.</td></tr>
+    <tr><td><b>Dev gateway</b></td><td>A small local server on port 8080 that routes like CloudFront does.</td></tr>
+  </tbody></table></div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>AWS and hosting words</h2></div>
+  <div class="tbl"><table><tbody>
+    <tr><td><b>Registrar</b></td><td>Where the domain was bought and is renewed: GoDaddy.</td></tr>
+    <tr><td><b>DNS / nameservers</b></td><td>The internet's address book, and the servers that answer for our domain (Route 53).</td></tr>
+    <tr><td><b>Hosted zone</b></td><td>Our domain's set of DNS records in Route 53.</td></tr>
+    <tr><td><b>Wildcard record</b></td><td><code>*.storeease.in</code>: one record that covers every store's address.</td></tr>
+    <tr><td><b>A / CNAME / TXT record</b></td><td>"Lives at this IP" / "is another name for" / "plain text, used to prove ownership".</td></tr>
+    <tr><td><b>ACM certificate</b></td><td>Free HTTPS certificate from AWS. Ours covers <code>storeease.in</code> and <code>*.storeease.in</code>.</td></tr>
+    <tr><td><b>S3 bucket</b></td><td>File storage. Holds the websites, uploads and backups.</td></tr>
+    <tr><td><b>CloudFront / distribution</b></td><td>AWS's worldwide cache in front of the sites. A distribution is one CloudFront setup.</td></tr>
+    <tr><td><b>Origin</b></td><td>Where CloudFront fetches from: a bucket, or our server (<code>origin.storeease.in</code>).</td></tr>
+    <tr><td><b>EC2 / t3.micro</b></td><td>A rented virtual server; t3.micro is the small 1 GB size we use now.</td></tr>
+    <tr><td><b>Elastic IP</b></td><td>A fixed public IP address for the server.</td></tr>
+    <tr><td><b>ECR</b></td><td>AWS's store for Docker images; the backend image lives there.</td></tr>
+    <tr><td><b>SSM Parameter Store</b></td><td>Where settings and secrets live, one parameter per setting.</td></tr>
+    <tr><td><b>Session Manager</b></td><td>Opens a shell on the server, or a tunnel to Mailpit/Postgres, without SSH.</td></tr>
+    <tr><td><b>Docker / Compose</b></td><td>Packages each part (API, Postgres, nginx, Mailpit) as a container; Compose runs them together.</td></tr>
+    <tr><td><b>nginx</b></td><td>The web server in front of the API on our server.</td></tr>
+    <tr><td><b>Let's Encrypt / certbot</b></td><td>Free certificates for the server's own address, renewed automatically.</td></tr>
+    <tr><td><b>Mailpit</b></td><td>A test inbox that catches every email instead of sending it.</td></tr>
+    <tr><td><b>Terraform / state / plan / apply</b></td><td>Infrastructure as code. State = what it built. Plan = the to-do list. Apply = doing it.</td></tr>
+    <tr><td><b>GitHub Actions / workflow / run</b></td><td>GitHub's robot, its recipe file, and one execution of it.</td></tr>
+    <tr><td><b>OIDC</b></td><td>How GitHub proves its identity to AWS, so no AWS keys are stored in GitHub.</td></tr>
+    <tr><td><b>RDS / Elastic Beanstalk</b></td><td>AWS's managed database / app hosting. Phase 2.</td></tr>
+    <tr><td><b>SES</b></td><td>Amazon Simple Email Service: how the app sends its email. Starts in a "sandbox" that mails only verified addresses until AWS grants production access.</td></tr>
+    <tr><td><b>DKIM</b></td><td>A digital signature added to each email. Receivers check it against a public key published in DNS, so forged mail is spotted.</td></tr>
+    <tr><td><b>SPF</b></td><td>A DNS list of the servers allowed to send mail for a domain. A domain may have only one.</td></tr>
+    <tr><td><b>DMARC</b></td><td>A DNS rule telling receivers what to do with mail that fails SPF and DKIM (here: reject), and where to send reports.</td></tr>
+    <tr><td><b>MX</b></td><td>A DNS record saying which servers receive mail for a domain (here: GoDaddy's, for <code>info@storeease.in</code>).</td></tr>
+    <tr><td><b>CSP</b></td><td>Content Security Policy: a header telling the browser which addresses a page may load from or send data to.</td></tr>
+    <tr><td><b>frame-ancestors</b></td><td>The part of the CSP that says who may show this page inside a frame. We allow only the page's own address (the dashboard preview).</td></tr>
+  </tbody></table></div>
+</section>
+
+<nav class="pager" aria-label="Next and previous page"><a href="decisions.html">← Decisions & open items</a><span></span></nav>
+<footer class="foot">Built from the docs in storeease-backend, storeease-frontend, storeease-infra and storeease-global (main, 25 Oct 2026). When a page and a repo doc disagree, the repo doc wins; fix this page in <code>storeease-infra/handbook/</code>.</footer>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deploy &amp; Operate · StoreEase Handbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@700&display=swap">
+<link rel="stylesheet" href="assets/handbook.css">
+</head>
+<body>
+<div class="frame">
+<aside class="side">
+<a class="brand" href="index.html"><b>St<i></i>reEase</b><span>Handbook</span></a>
+<nav class="nav" aria-label="Handbook pages">
+<div class="grp">Start</div>
+<a href="index.html">Start here</a>
+<div class="grp">The business</div>
+<a href="product.html">The product</a>
+<a href="pricing.html">Plans & billing</a>
+<div class="grp">How it is built</div>
+<a href="architecture.html">Architecture</a>
+<a href="tenancy.html">Keeping stores apart</a>
+<a href="apps.html">The apps</a>
+<a href="backend.html">API & data</a>
+<div class="grp">Running it</div>
+<a href="deploy.html" aria-current="page">Deploy & operate</a>
+<a href="local.html">Run it locally</a>
+<div class="grp">Reference</div>
+<a href="decisions.html">Decisions & open items</a>
+<a href="glossary.html">Glossary</a>
+</nav>
+</aside>
+<main>
+<header class="top">
+  <span class="eyebrow">Running it</span>
+  <h1>Deploy &amp; operate</h1>
+  <p class="lead">Deploys are one button in GitHub with a checkbox per service. Day-to-day work on the server goes through AWS Session Manager. There is no SSH.</p>
+</header>
+
+<section>
+  <div class="sec-head"><h2>The deploy robot (GitHub Actions)</h2><p>Not an AI: a robot that follows a fixed recipe, <code>storeease-infra/.github/workflows/deploy.yml</code>.</p></div>
+  <div class="grid g3">
+    <div class="card"><span class="ic">🖥️</span><h3>Borrows a fresh computer</h3><p>Each run gets a clean machine from GitHub for a few minutes. Nothing runs on anyone's laptop.</p></div>
+    <div class="card"><span class="ic">📜</span><h3>Follows the recipe</h3><p>Download the code, build, test, upload. The same steps every time.</p></div>
+    <div class="card"><span class="ic">🪪</span><h3>Shows an ID to AWS</h3><p>No AWS password in GitHub. AWS checks a signed ID from GitHub and hands out a key that expires in an hour (OIDC).</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Actions → Deploy → Run workflow</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>You changed…</th><th>Tick</th><th>What it does</th><th class="num">About</th></tr></thead>
+    <tbody>
+      <tr><td>Backend code</td><td><span class="chip c-ok">Backend</span></td><td>Builds the Docker image, pushes it to ECR, tells the server to pull it, runs migrations, health check. Rolls back by itself if unhealthy</td><td class="num">5-8 min</td></tr>
+      <tr><td>Homepage</td><td><span class="chip c-ok">Homepage</span></td><td>Builds the Astro site, uploads to S3, refreshes CloudFront</td><td class="num">2-3 min</td></tr>
+      <tr><td>Login, dashboard, shop, admin</td><td><span class="chip c-ok">Frontend</span></td><td>Typecheck, lint, tests, builds the 4 apps, uploads, refreshes CloudFront</td><td class="num">5-10 min</td></tr>
+      <tr><td>AWS setup (rare)</td><td><span class="chip c-warn">Terraform apply</span></td><td>Plans and applies <code>config/project.yaml</code> + Terraform. Other ticked jobs wait for it</td><td class="num">1-5 min</td></tr>
+    </tbody></table></div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="callout info"><b>Older version?</b>Set <code>refs</code>, e.g. <code>backend=a1b2c3d</code> or <code>frontend=my-branch</code>. Empty = everything from <code>main</code>. Migrations are never undone, so they must keep working with the previous version.</div>
+    <div class="callout warn"><b>Never press Cancel during a Terraform apply</b>A cancelled apply can forget what it built: a stuck lock, duplicate resources. Let it finish or time out. Start a fresh run instead of "Re-run".</div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>What's on the server</h2><p>EC2 t3.micro (1 GB RAM + 2 GB swap), Amazon Linux 2023, everything in <code>/opt/storeease</code> under Docker Compose.</p></div>
+  <div class="grid g4">
+    <div class="card"><h3>nginx</h3><p>HTTPS for <code>origin.storeease.in</code> (Let's Encrypt, renews itself). Refuses anything without CloudFront's secret.</p></div>
+    <div class="card"><h3>api</h3><p>The backend image, settings written from SSM into <code>api.env</code> at each deploy.</p></div>
+    <div class="card"><h3>postgres</h3><p>PostgreSQL 17 on the server's disk. Nightly backup to S3 at 02:00 IST, kept 14 days.</p></div>
+    <div class="card"><h3>mailpit</h3><p>Only a safety net now: the API sends through Amazon SES, so nothing arrives here unless <code>mail.mode</code> is set to <code>mailpit</code>.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Everyday tasks</h2><p>Install the AWS CLI and the Session Manager plugin first. Server commands need <code>sudo</code>.</p></div>
+  <div class="grid g2">
+    <div class="card"><h3>Open a shell on the server</h3><pre><code>aws ssm get-parameter --name /storeease/dev/infra/backend_instance_id --query Parameter.Value --output text
+aws ssm start-session --target &lt;instance-id&gt;
+cd /opt/storeease</code></pre></div>
+    <div class="card"><h3>Logs</h3><pre><code>sudo docker compose logs --tail=200 -f api
+sudo docker compose logs --tail=100 nginx postgres mailpit
+sudo docker compose ps</code></pre></div>
+    <div class="card"><h3>Read the emails (Mailpit)</h3><pre><code>aws ssm start-session --target &lt;instance-id&gt; --document-name AWS-StartPortForwardingSession --parameters '{"portNumber":["8025"],"localPortNumber":["8025"]}'</code></pre><p>Keep the window open, then visit <code>http://localhost:8025</code>.</p></div>
+    <div class="card"><h3>Database (psql)</h3><pre><code>aws ssm start-session --target &lt;instance-id&gt; --document-name AWS-StartPortForwardingSession --parameters '{"portNumber":["5432"],"localPortNumber":["15432"]}'
+psql -h 127.0.0.1 -p 15432 -U postgres -d storeease</code></pre><p>Password: SSM <code>/storeease/dev/backend/POSTGRES_PASSWORD</code>.</p></div>
+    <div class="card"><h3>Create a platform admin</h3><pre><code>sudo docker compose exec api python -m app.cli.admin create --email you@example.com --name "Your Name"</code></pre></div>
+    <div class="card"><h3>Backups</h3><pre><code>sudo /opt/storeease/bin/backup-db.sh            # one now
+sudo bin/restore-db.sh backups/db/storeease-&lt;time&gt;.sql.gz   # replaces live DB</code></pre></div>
+  </div>
+  <div class="tbl" style="margin-top:16px"><table>
+    <thead><tr><th>Task</th><th>How</th></tr></thead>
+    <tbody>
+      <tr><td>Change a setting or secret</td><td><code>aws ssm put-parameter --name /storeease/dev/backend/&lt;NAME&gt; --type SecureString --value … --overwrite</code>, then deploy Backend. Rotating <code>JWT_SECRET</code> signs everyone out</td></tr>
+      <tr><td>Razorpay keys</td><td>The three <code>RAZORPAY_*</code> parameters, set by hand (Terraform never creates them). Missing = instant mode</td></tr>
+      <tr><td>Bigger server</td><td>Change <code>backend.instance_type</code> in <code>config/project.yaml</code>, deploy with Terraform apply (about a minute of downtime, same IP)</td></tr>
+      <tr><td>Email settings</td><td>The <code>SMTP_*</code> parameters are written by Terraform (SES). See "Email (Amazon SES)" below before changing anything</td></tr>
+    </tbody></table></div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>One file to edit: <code>config/project.yaml</code></h2><p>Terraform and the deploy robot both read it.</p></div>
+  <pre><code>aws:     account_id "&lt;your 12-digit AWS account id&gt;", region ap-south-1
+domain:  root storeease.in, ops_email &lt;ops mailbox&gt;
+github:  org StoreEase-Dev (+ numeric ids the AWS roles trust)
+backend: instance_type t3.micro, volume_gb 30, swap_gb 2
+budget:  monthly_usd 15   → email at 80%</code></pre>
+</section>
+
+<section>
+  <div class="sec-head"><h2>What it costs</h2><p>US dollars per month, from the infra docs. Free tier depends on when the AWS account was created.</p></div>
+  <div class="bars" role="list">
+    <div class="bar" role="listitem"><span>EC2 t3.micro + disk</span><div class="t"><i style="width:100%"></i></div><b>≤12</b></div>
+    <div class="bar" role="listitem"><span>Public IP (always billed)</span><div class="t"><i style="width:30%"></i></div><b>3.6</b></div>
+    <div class="bar" role="listitem"><span>Route 53 zone</span><div class="t"><i style="width:4.2%"></i></div><b>0.5</b></div>
+    <div class="bar" role="listitem"><span>CloudFront, S3, ECR, SSM</span><div class="t"><i style="width:2%"></i></div><b>~0</b></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Email (Amazon SES)</h2><p>Outgoing mail (login codes, orders, billing) goes through SES. Incoming mail to <code>info@storeease.in</code> stays in the GoDaddy mailbox. Decision D-SES1.</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Record</th><th>Where</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td><b>DKIM</b>: 3 CNAMEs <code>&lt;token&gt;._domainkey</code></td><td>root</td><td>SES signs each mail; receivers check the signature. Terraform creates and validates them</td></tr>
+      <tr><td><b>SPF</b>: one TXT</td><td>root</td><td>GoDaddy's only. <b>Never add SES here</b>: two SPF records break both</td></tr>
+      <tr><td><b>MAIL FROM</b>: MX + SPF TXT</td><td><code>mail.storeease.in</code></td><td>SES's own bounce address. This is where SES's SPF lives, so the root keeps one</td></tr>
+      <tr><td><b>DMARC</b>: one TXT <code>_dmarc</code></td><td>root</td><td>GoDaddy's record, kept as it is (<code>p=reject</code>). SES mail passes through DKIM alignment. Edit it in <code>project.yaml</code>, never add a second</td></tr>
+      <tr><td><b>Mailbox</b>: MX, DKIM CNAMEs, autodiscover</td><td>root</td><td>Needed for <code>info@</code> to receive. They vanished when the nameservers moved and are now <code>domain.extra_records</code> in <code>project.yaml</code></td></tr>
+    </tbody></table></div>
+  <div class="grid g3" style="margin-top:14px">
+    <div class="card"><span class="chip c-warn" style="justify-self:start">1 · once</span><h3>Re-run <code>bootstrap/</code></h3><p>Lets the Terraform role manage SES. Without it the apply fails with AccessDenied.</p></div>
+    <div class="card"><span class="chip c-warn" style="justify-self:start">2 · you ask AWS</span><h3>Production access</h3><p>Console, Mumbai region, SES &rarr; Account dashboard. Until AWS agrees (about a day), SES mails only verified addresses.</p></div>
+    <div class="card"><span class="chip c-warn" style="justify-self:start">3 · deploy twice</span><h3>Apply, then Backend</h3><p>Terraform apply first, then Deploy Backend (rewrites <code>api.env</code>). Click the confirmation link in the "Subscription Confirmation" email, or bounce notices never arrive.</p></div>
+  </div>
+  <div class="callout info" style="margin-top:14px"><b>Test it</b>Sign up with a real Gmail address. In the code mail choose &#8942; &rarr; Show original: SPF, DKIM (domain storeease.in) and DMARC must all say PASS. Bounces and complaints go to an SNS topic that emails the ops address; nothing in the app reads it yet.</div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Security headers and framing</h2></div>
+  <div class="callout info"><b>Who may frame whom</b>The dashboard shows the shop in a preview frame on the same address, so only the <b>app</b> distribution sends <code>frame-ancestors 'self'</code> and <code>X-Frame-Options: SAMEORIGIN</code>. The homepage and the uploads site stay at "nobody may frame". Every shop is its own address, so one shop still cannot frame another, and outside sites cannot frame anything. The same policy lists the uploads bucket's own S3 address, because browsers upload photos straight to it. Decision D-AWS7.</div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Lessons from the first deploy (24 Oct 2026)</h2><p>Each one is fixed in the code now. Kept here because they explain odd-looking lines.</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Symptom</th><th>Cause</th><th>Fix now in place</th></tr></thead>
+    <tbody>
+      <tr><td>"Not authorized to perform sts:AssumeRoleWithWebIdentity"</td><td>Our GitHub org sends its ID with numbers: <code>repo:StoreEase-Dev@266464725/storeease-infra@1360308108:…</code></td><td>Roles trust both formats; ids in <code>project.yaml</code></td></tr>
+      <tr><td>Apply waits on the certificate forever</td><td>Nameservers at GoDaddy not yet pointing to Route 53</td><td>Switch them while it waits; check with <code>nslookup -type=NS storeease.in. 8.8.8.8</code></td></tr>
+      <tr><td>Two hosted zones, stuck lock, "already exists"</td><td>An apply was cancelled mid-way</td><td>Don't cancel; the <code>origin</code> record may overwrite; old zone deleted by hand</td></tr>
+      <tr><td>"Saved plan is stale"</td><td>Re-running an old run reuses its plan</td><td>Always start a new run</td></tr>
+      <tr><td>"Invalid rule description"</td><td>An apostrophe in a firewall rule description</td><td>Removed</td></tr>
+      <tr><td>"Instances not in a valid state"</td><td>Server booted with no internet (rule above failed), setup never ran</td><td>Server replaced</td></tr>
+      <tr><td>Let's Encrypt "Connection refused"</td><td>nginx crashed: the 48-character secret didn't fit nginx's default table</td><td><code>map_hash_bucket_size 128</code>; deploy waits for nginx and prints its log</td></tr>
+      <tr><td>"open .env: permission denied"</td><td>Settings files are root-only on purpose</td><td>Use <code>sudo</code> on the server</td></tr>
+    </tbody></table></div>
+  <div class="callout info" style="margin-top:12px"><b>No "Required reviewers" on our GitHub plan</b>Environment approvals need a paid plan for private repos, so a ticked Terraform apply runs right after its plan. Read the plan in a run without Terraform ticked first if you're unsure.</div>
+</section>
+
+<nav class="pager" aria-label="Next and previous page"><a href="backend.html">← API & data</a><a href="local.html">Run it locally →</a></nav>
+<footer class="foot">Built from the docs in storeease-backend, storeease-frontend, storeease-infra and storeease-global (main, 25 Oct 2026). When a page and a repo doc disagree, the repo doc wins; fix this page in <code>storeease-infra/handbook/</code>.</footer>
+</main>
+</div>
+</body>
+</html>

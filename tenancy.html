@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Keeping Stores Apart · StoreEase Handbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@700&display=swap">
+<link rel="stylesheet" href="assets/handbook.css">
+</head>
+<body>
+<div class="frame">
+<aside class="side">
+<a class="brand" href="index.html"><b>St<i></i>reEase</b><span>Handbook</span></a>
+<nav class="nav" aria-label="Handbook pages">
+<div class="grp">Start</div>
+<a href="index.html">Start here</a>
+<div class="grp">The business</div>
+<a href="product.html">The product</a>
+<a href="pricing.html">Plans & billing</a>
+<div class="grp">How it is built</div>
+<a href="architecture.html">Architecture</a>
+<a href="tenancy.html" aria-current="page">Keeping stores apart</a>
+<a href="apps.html">The apps</a>
+<a href="backend.html">API & data</a>
+<div class="grp">Running it</div>
+<a href="deploy.html">Deploy & operate</a>
+<a href="local.html">Run it locally</a>
+<div class="grp">Reference</div>
+<a href="decisions.html">Decisions & open items</a>
+<a href="glossary.html">Glossary</a>
+</nav>
+</aside>
+<main>
+<header class="top">
+  <span class="eyebrow">How it is built</span>
+  <h1>Keeping stores apart</h1>
+  <p class="lead">One app and one database serve every business. Priya must never see another store's products, orders or customers: not through the API, not through a bug, not through a crafted request. This page shows how.</p>
+</header>
+
+<section>
+  <div class="sec-head"><h2>The choice: shared tables, filtered by the database</h2></div>
+  <div class="grid g3">
+    <div class="card"><span class="chip c-bad" style="justify-self:start">Not chosen</span><h3>A database per store</h3><p>Hundreds of databases to migrate, back up and monitor. Too expensive for ₹499 customers.</p></div>
+    <div class="card"><span class="chip c-bad" style="justify-self:start">Not chosen</span><h3>A schema per store</h3><p>Every migration runs once per store. Still heavy at our scale.</p></div>
+    <div class="card bold green"><span class="chip c-ok" style="justify-self:start">Chosen</span><h3>Shared tables + <code>tenant_id</code> + RLS</h3><p>Every row says which store it belongs to. PostgreSQL itself hides other stores' rows on every query.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>One request, start to finish</h2><p>A shopper opens Priya's catalogue.</p></div>
+  <figure class="fig" style="margin:0">
+    <svg class="wide" viewBox="0 0 900 230" role="img" aria-label="Host header resolves store 17, session sets current tenant, query runs, Postgres adds tenant filter, only store 17 rows return">
+      <defs><marker id="c1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="arrow"/></marker></defs>
+      <rect x="10" y="40" width="160" height="120" rx="14" class="box"/><text x="90" y="70" text-anchor="middle" class="t-b">1 · Request</text><text x="90" y="94" text-anchor="middle" class="t-xs">Host: priya.storeease.in</text><text x="90" y="112" text-anchor="middle" class="t-xs">GET /api/v1/storefront/</text><text x="90" y="126" text-anchor="middle" class="t-xs">products</text>
+      <rect x="190" y="40" width="160" height="120" rx="14" class="box"/><text x="270" y="70" text-anchor="middle" class="t-b">2 · Find the store</text><text x="270" y="94" text-anchor="middle" class="t-xs">"priya" → store 17</text><text x="270" y="112" text-anchor="middle" class="t-xs">active? published?</text>
+      <rect x="370" y="40" width="160" height="120" rx="14" class="box"/><text x="450" y="70" text-anchor="middle" class="t-b">3 · Tag the session</text><text x="450" y="94" text-anchor="middle" class="t-xs">SET LOCAL</text><text x="450" y="112" text-anchor="middle" class="t-xs">app.current_tenant = 17</text>
+      <rect x="550" y="40" width="160" height="120" rx="14" class="box"/><text x="630" y="70" text-anchor="middle" class="t-b">4 · Plain query</text><text x="630" y="94" text-anchor="middle" class="t-xs">SELECT … FROM products</text><text x="630" y="112" text-anchor="middle" class="t-xs">no store filter written</text>
+      <rect x="730" y="40" width="160" height="120" rx="14" class="box-g"/><text x="810" y="70" text-anchor="middle" class="t-b">5 · Postgres filters</text><text x="810" y="94" text-anchor="middle" class="t-xs">adds tenant_id = 17</text><text x="810" y="112" text-anchor="middle" class="t-xs">only Priya's rows</text>
+      <path d="M172 100H186" class="wire" marker-end="url(#c1)"/><path d="M352 100H366" class="wire" marker-end="url(#c1)"/><path d="M532 100H546" class="wire" marker-end="url(#c1)"/><path d="M712 100H726" class="wire" marker-end="url(#c1)"/>
+      <text x="450" y="200" text-anchor="middle" class="t-s">When the transaction ends, the tag is gone. The next request starts clean.</text>
+    </svg>
+  </figure>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="card"><h3>The client never sends a store id</h3><p>It comes from the address (or the signed login token). A forged field is ignored.</p></div>
+    <div class="card"><h3>Even buggy code is safe</h3><p>If a query forgets the filter, or trusts a wrong id, the database still returns nothing from other stores.</p></div>
+    <div class="card"><h3>Proven by tests</h3><p>The isolation suite attacks one store with another's ids at database and HTTP level, and fails if any table lacks a policy.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Three database roles</h2><p>None of them is a superuser. The app's main role owns nothing, so the safety rules always apply to it.</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Role</th><th>Used by</th><th>Can do</th></tr></thead>
+    <tbody>
+      <tr><td><code>storeease_migrator</code></td><td>Migrations, at deploy time</td><td>Owns the tables. Changes the schema. Never serves a request</td></tr>
+      <tr><td><code>storeease_app</code></td><td>Every store and shopper request</td><td>Reads and writes, always filtered to one store (or, for shopper rows, to the signed-in shopper)</td></tr>
+      <tr><td><code>storeease_admin</code></td><td>Admin portal, login, billing, background jobs</td><td>Sees every store. Code using it must filter by store itself; tests check which modules may use it</td></tr>
+    </tbody></table></div>
+  <p class="muted small" style="margin-top:10px">Rule for developers: <b>a new table that holds store data gets its <code>tenant_id</code> and its policy in the same migration</b>, never later.</p>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Three kinds of login</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Who</th><th>How they log in</th><th>Session lasts</th><th>Where</th></tr></thead>
+    <tbody>
+      <tr><td><b>Owners &amp; staff</b></td><td>Email + password. One account across all their businesses. 5 wrong tries = 15-minute lock</td><td>15 min token, renewed for up to 30 days</td><td>dashboard.storeease.in</td></tr>
+      <tr><td><b>Shoppers</b></td><td>6-digit code by email (valid 10 min). No passwords. One StoreEase-wide account, signed in separately at each shop</td><td>30 min token, renewed for up to 90 days</td><td>the store's own address</td></tr>
+      <tr><td><b>StoreEase team</b></td><td>Email + password, created only from the server's command line</td><td>15 min token, renewed for up to 24 hours</td><td>admin.storeease.in</td></tr>
+    </tbody></table></div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card"><h3>Tokens never touch storage</h3><p>The short token lives only in the page's memory. The renewal token is a locked-down cookie that scripts can't read. A reused renewal token kills the whole session family.</p></div>
+    <div class="card"><h3>Owners and staff never mix</h3><p>An account is either owner-type (may own several businesses) or staff-type (may work at several). A staff member wanting their own shop signs up with another email.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>The hand-over from login to store</h2><p>Staff log in on one shared address but work on their store's address. Cookies can't cross addresses, so a one-time token does.</p></div>
+  <div class="flow">
+    <div class="step"><b>Log in</b><span>dashboard.storeease.in checks the password</span></div><span class="arr">→</span>
+    <div class="step"><b>Several businesses?</b><span>Pick one from the list</span></div><span class="arr">→</span>
+    <div class="step"><b>Redirect</b><span>to priya.storeease.in/dashboard/#rt=… (a fragment never reaches any server)</span></div><span class="arr">→</span>
+    <div class="step g"><b>Swap at once</b><span>The dashboard trades it for a fresh cookie on its own address and erases it</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Roles inside a business</h2><p>The owner creates named roles; each staff member gets one. The UI hides what a role can't use, and the API refuses it anyway.</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Area</th><th>Levels, lowest first</th></tr></thead>
+    <tbody>
+      <tr><td>Catalog</td><td><span class="chip">none</span> <span class="chip">view</span> <span class="chip">manage</span></td></tr>
+      <tr><td>Stock</td><td><span class="chip">none</span> <span class="chip">edit</span></td></tr>
+      <tr><td>Orders</td><td><span class="chip">none</span> <span class="chip">view</span> <span class="chip">manage</span></td></tr>
+      <tr><td>Record sales</td><td><span class="chip">denied</span> <span class="chip">needs approval</span> <span class="chip">complete</span> <span class="chip">approver</span></td></tr>
+      <tr><td>Customers</td><td><span class="chip">none</span> <span class="chip">view</span> <span class="chip">manage</span></td></tr>
+      <tr><td>Reports</td><td><span class="chip">none</span> <span class="chip">view</span></td></tr>
+      <tr><td>Sales channels</td><td><span class="chip">none</span> <span class="chip">manage</span></td></tr>
+      <tr><td>Store settings</td><td><span class="chip">none</span> <span class="chip">view</span> <span class="chip">manage</span></td></tr>
+      <tr><td>Staff &amp; roles, Billing, Custom domain</td><td><span class="chip c-info">owner only</span></td></tr>
+    </tbody></table></div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Shoppers belong to StoreEase, not to one store</h2><p>One person, one account, many shops. A shop only ever learns about the people who ordered from it.</p></div>
+  <figure class="fig" style="margin:0">
+    <svg class="wide" viewBox="0 0 900 270" role="img" aria-label="One shopper record with an address book is linked to three stores. Each store sees the name, email, phone and the address printed on its own orders, never the address book">
+      <defs><marker id="d1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="arrow"/></marker></defs>
+      <rect x="10" y="50" width="230" height="150" rx="14" class="box-g"/><text x="125" y="82" text-anchor="middle" class="t-b">Shopper (one per person)</text><text x="125" y="110" text-anchor="middle" class="t-xs">email · name · phone</text><text x="125" y="130" text-anchor="middle" class="t-xs">address book</text><text x="125" y="170" text-anchor="middle" class="t-xs">protected by its own tag</text>
+      <rect x="330" y="10" width="220" height="60" rx="14" class="box"/><text x="440" y="36" text-anchor="middle" class="t-b">Link to Priya's shop</text><text x="440" y="55" text-anchor="middle" class="t-xs">blocked? · private notes</text>
+      <rect x="330" y="100" width="220" height="60" rx="14" class="box"/><text x="440" y="126" text-anchor="middle" class="t-b">Link to Asha's shop</text><text x="440" y="145" text-anchor="middle" class="t-xs">blocked? · private notes</text>
+      <rect x="330" y="190" width="220" height="60" rx="14" class="box"/><text x="440" y="216" text-anchor="middle" class="t-b">Link to Ravi's shop</text><text x="440" y="235" text-anchor="middle" class="t-xs">blocked? · private notes</text>
+      <path d="M242 100 C290 100,290 40,326 40" class="wire" marker-end="url(#d1)"/><path d="M242 125H326" class="wire" marker-end="url(#d1)"/><path d="M242 150 C290 150,290 220,326 220" class="wire" marker-end="url(#d1)"/>
+      <rect x="640" y="60" width="250" height="130" rx="14" class="box"/><text x="765" y="90" text-anchor="middle" class="t-b">What a shop sees</text><text x="765" y="115" text-anchor="middle" class="t-xs">name · email · phone</text><text x="765" y="133" text-anchor="middle" class="t-xs">the address printed on its own orders</text><text x="765" y="158" text-anchor="middle" class="t-xs">never the address book</text><text x="765" y="174" text-anchor="middle" class="t-xs">never other shops' orders</text>
+      <path d="M552 125H636" class="wire" marker-end="url(#d1)"/>
+    </svg>
+    <figcaption>The link is created at a shop on the first verified login. A shop lists, counts and exports a shopper only after they have <b>ordered</b> there. Blocking and private notes belong to that shop alone.</figcaption>
+  </figure>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="card"><h3>A second safety tag</h3><p>Shopper rows have no store id, so the database keys them to the signed-in shopper instead. A staff session never carries that tag and sees no address book. The isolation tests cover it.</p></div>
+    <div class="card"><h3>Shared, with limits</h3><p>Name, phone and addresses are shared. Old orders keep their own copy of the address. Ratings and analytics stay per shop.</p></div>
+    <div class="card"><h3>Shoppers are told</h3><p>Login and the account page say their details are saved with StoreEase for any StoreEase shop.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Email verification gate</h2><p>A new owner must confirm their email with a 6-digit code (valid 10 minutes, 5 tries, resend once a minute). Owners who signed up before this existed count as verified.</p></div>
+  <div class="grid g2">
+    <div class="card"><span class="chip c-bad" style="justify-self:start">locked until verified</span><ul><li>Store settings and logo</li><li>Products, categories, images, CSV import</li><li>Publishing</li><li>Buying a plan or add-on</li></ul></div>
+    <div class="card"><span class="chip c-ok" style="justify-self:start">still open</span><ul><li>Looking at anything</li><li>Unpublishing and cancelling</li><li>Profile and the verification step itself</li></ul></div>
+  </div>
+  <p class="muted small" style="margin-top:10px">The API answers a locked request with 403 <code>email_not_verified</code> before it does anything; the dashboard only greys out the buttons to match. The same applies to staff invited by link (setting a password verifies them) and to a confirmed email change.</p>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Store status gates</h2></div>
+  <div class="grid g3">
+    <div class="card"><span class="chip c-warn" style="justify-self:start">unpublished</span><p>New stores. The shop shows a playful "coming soon" page; the dashboard works. Publishing needs a paid plan and a verified email.</p></div>
+    <div class="card"><span class="chip c-bad" style="justify-self:start">suspended</span><p>By an admin or by billing. Shop shows a playful "temporarily closed" page, staff signed out, the owner can still sign in, see why, and pay.</p></div>
+    <div class="card"><span class="chip c-bad" style="justify-self:start">deleted</span><p>Soft delete: a playful "no such shop" page everywhere, data kept, address reserved, restorable by an admin.</p></div>
+  </div>
+</section>
+
+<nav class="pager" aria-label="Next and previous page"><a href="architecture.html">← Architecture</a><a href="apps.html">The apps →</a></nav>
+<footer class="foot">Built from the docs in storeease-backend, storeease-frontend, storeease-infra and storeease-global (main, 25 Oct 2026). When a page and a repo doc disagree, the repo doc wins; fix this page in <code>storeease-infra/handbook/</code>.</footer>
+</main>
+</div>
+</body>
+</html>

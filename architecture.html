@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Architecture · StoreEase Handbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@700&display=swap">
+<link rel="stylesheet" href="assets/handbook.css">
+</head>
+<body>
+<div class="frame">
+<aside class="side">
+<a class="brand" href="index.html"><b>St<i></i>reEase</b><span>Handbook</span></a>
+<nav class="nav" aria-label="Handbook pages">
+<div class="grp">Start</div>
+<a href="index.html">Start here</a>
+<div class="grp">The business</div>
+<a href="product.html">The product</a>
+<a href="pricing.html">Plans & billing</a>
+<div class="grp">How it is built</div>
+<a href="architecture.html" aria-current="page">Architecture</a>
+<a href="tenancy.html">Keeping stores apart</a>
+<a href="apps.html">The apps</a>
+<a href="backend.html">API & data</a>
+<div class="grp">Running it</div>
+<a href="deploy.html">Deploy & operate</a>
+<a href="local.html">Run it locally</a>
+<div class="grp">Reference</div>
+<a href="decisions.html">Decisions & open items</a>
+<a href="glossary.html">Glossary</a>
+</nav>
+</aside>
+<main>
+<header class="top">
+  <span class="eyebrow">How it is built</span>
+  <h1>Architecture</h1>
+  <p class="lead">Five websites, one API, one database. Everything a visitor downloads is a plain file from S3. Only API calls reach the server.</p>
+</header>
+
+<section>
+  <div class="sec-head"><h2>Five websites, each on its own address</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Address</th><th>App</th><th>For</th><th>Repo / folder</th></tr></thead>
+    <tbody>
+      <tr><td><code>storeease.in</code></td><td><b>Homepage</b></td><td>everyone</td><td>storeease-global</td></tr>
+      <tr><td><code>dashboard.storeease.in</code></td><td><b>Account</b>: login, signup, passwords, business picker</td><td>owners, staff</td><td>frontend <code>apps/account</code></td></tr>
+      <tr><td><code>priya.storeease.in/dashboard</code></td><td><b>Dashboard</b>: one business's back office</td><td>owners, staff</td><td>frontend <code>apps/dashboard</code></td></tr>
+      <tr><td><code>priya.storeease.in</code> (+ own domain)</td><td><b>Storefront</b>: the shop, in the store's template</td><td>shoppers</td><td>frontend <code>apps/storefront</code></td></tr>
+      <tr><td><code>admin.storeease.in</code></td><td><b>Admin</b>: every business, platform numbers</td><td>StoreEase team</td><td>frontend <code>apps/admin</code></td></tr>
+    </tbody></table></div>
+  <p class="muted small" style="margin-top:10px">Staff log in on <code>dashboard.</code> and are handed over to their store's address (see <a href="tenancy.html">Keeping stores apart</a>). One wildcard DNS record, <code>*.storeease.in</code>, covers every store, so a new signup needs no DNS work.</p>
+</section>
+
+<section>
+  <div class="sec-head"><h2>On AWS</h2><p>Region Mumbai (ap-south-1). The certificate for CloudFront lives in N. Virginia, as AWS requires.</p></div>
+  <figure class="fig" style="margin:0">
+    <svg class="wide" viewBox="0 0 980 560" role="img" aria-labelledby="awsT">
+      <title id="awsT">Visitors reach three CloudFront distributions; files come from S3; /api goes to one EC2 server running nginx, the API, PostgreSQL and Mailpit</title>
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow"/></marker>
+        <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-g"/></marker>
+      </defs>
+      <rect x="16" y="150" width="150" height="190" rx="18" class="box"/>
+      <text x="91" y="180" text-anchor="middle" class="t-h">Browsers</text>
+      <text x="91" y="212" text-anchor="middle" class="t-s">visitors</text><text x="91" y="232" text-anchor="middle" class="t-s">owners · staff</text>
+      <text x="91" y="252" text-anchor="middle" class="t-s">shoppers</text><text x="91" y="272" text-anchor="middle" class="t-s">StoreEase team</text>
+      <rect x="200" y="30" width="160" height="66" rx="14" class="box-i"/>
+      <text x="280" y="58" text-anchor="middle" class="t-h">Route 53</text><text x="280" y="78" text-anchor="middle" class="t-s">DNS (domain at GoDaddy)</text>
+      <path d="M110 150 L110 63 L196 63" class="wire-d" marker-end="url(#ar)"/>
+      <rect x="190" y="115" width="780" height="435" rx="22" class="zone"/>
+      <text x="206" y="138" class="t-s" font-weight="700">AWS · ap-south-1 (Mumbai)</text>
+      <rect x="230" y="160" width="220" height="74" rx="14" class="box-g"/><text x="340" y="188" text-anchor="middle" class="t-h">Homepage CDN</text><text x="340" y="210" text-anchor="middle" class="t-s">storeease.in · www</text>
+      <rect x="230" y="256" width="220" height="100" rx="14" class="box-g"/><text x="340" y="284" text-anchor="middle" class="t-h">App CDN</text><text x="340" y="306" text-anchor="middle" class="t-s">dashboard. · admin. · *.</text><text x="340" y="326" text-anchor="middle" class="t-xs">router function picks the app</text><text x="340" y="342" text-anchor="middle" class="t-xs">by address + path</text>
+      <rect x="230" y="378" width="220" height="66" rx="14" class="box-g"/><text x="340" y="406" text-anchor="middle" class="t-h">Image CDN</text><text x="340" y="426" text-anchor="middle" class="t-s">cdn.storeease.in</text>
+      <path d="M168 238 L226 200" class="wire" marker-end="url(#ar)"/><path d="M168 248 L226 300" class="wire" marker-end="url(#ar)"/><path d="M168 258 L226 408" class="wire" marker-end="url(#ar)"/>
+      <rect x="510" y="160" width="200" height="74" rx="12" class="box"/><text x="610" y="188" text-anchor="middle" class="t-h">homepage bucket</text><text x="610" y="210" text-anchor="middle" class="t-s">Astro build</text>
+      <rect x="510" y="256" width="200" height="100" rx="12" class="box"/><text x="610" y="284" text-anchor="middle" class="t-h">app bucket</text><text x="610" y="306" text-anchor="middle" class="t-s">account/ dashboard/</text><text x="610" y="324" text-anchor="middle" class="t-s">admin/ storefront/</text>
+      <rect x="510" y="378" width="200" height="66" rx="12" class="box"/><text x="610" y="406" text-anchor="middle" class="t-h">uploads bucket</text><text x="610" y="426" text-anchor="middle" class="t-s">photos, logos, invoices</text>
+      <path d="M452 197 H506" class="wire" marker-end="url(#ar)"/><path d="M452 300 H506" class="wire" marker-end="url(#ar)"/><path d="M452 411 H506" class="wire" marker-end="url(#ar)"/>
+      <rect x="745" y="160" width="210" height="370" rx="18" class="box-w"/>
+      <text x="850" y="186" text-anchor="middle" class="t-h">EC2 t3.micro</text><text x="850" y="204" text-anchor="middle" class="t-s">origin.storeease.in</text>
+      <rect x="765" y="220" width="170" height="50" rx="10" class="box"/><text x="850" y="242" text-anchor="middle" class="t-b">nginx</text><text x="850" y="259" text-anchor="middle" class="t-xs">only CloudFront gets in</text>
+      <rect x="765" y="282" width="170" height="50" rx="10" class="box"/><text x="850" y="304" text-anchor="middle" class="t-b">API (FastAPI)</text><text x="850" y="321" text-anchor="middle" class="t-xs">Docker image from ECR</text>
+      <rect x="765" y="344" width="170" height="50" rx="10" class="box"/><text x="850" y="366" text-anchor="middle" class="t-b">PostgreSQL 17</text><text x="850" y="383" text-anchor="middle" class="t-xs">all store data</text>
+      <rect x="765" y="406" width="170" height="50" rx="10" class="box"/><text x="850" y="428" text-anchor="middle" class="t-b">Mailpit</text><text x="850" y="445" text-anchor="middle" class="t-xs">test inbox · SES sends</text>
+      <text x="850" y="482" text-anchor="middle" class="t-xs">no SSH · Session Manager only</text>
+      <text x="850" y="500" text-anchor="middle" class="t-xs">nightly DB backup → S3</text>
+      <path d="M850 270 V280" class="wire" marker-end="url(#ar)"/><path d="M850 332 V342" class="wire" marker-end="url(#ar)"/>
+      <path d="M452 280 C 600 240, 640 245, 761 245" class="wire-g" marker-end="url(#arg)"/>
+      <rect x="560" y="231" width="76" height="22" rx="11" class="track"/><text x="598" y="247" text-anchor="middle" font-size="12" font-weight="800" class="ink" style="fill:#000c3f">/api/*</text>
+      <rect x="510" y="470" width="200" height="60" rx="12" class="box-i"/><text x="610" y="496" text-anchor="middle" class="t-h">Razorpay</text><text x="610" y="514" text-anchor="middle" class="t-s">payment webhooks</text>
+      <path d="M712 500 L741 470" class="wire-d" marker-end="url(#ar)"/>
+    </svg>
+    <figcaption>Green line = the only path that reaches the server. Settings, passwords and keys live in AWS SSM Parameter Store, never in git.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Why every app calls the API on its own address</h2><p>This one rule explains a lot of the design.</p></div>
+  <div class="flow">
+    <div class="step"><b>The API finds the store from the address</b><span>A request to priya.storeease.in/api/… is about Priya's store</span></div><span class="arr">→</span>
+    <div class="step"><b>So each app calls <code>/api</code> on its own host</b><span>No app ever sends a store id</span></div><span class="arr">→</span>
+    <div class="step g"><b>Bonus</b><span>No cross-site (CORS) setup, and login cookies stay locked to one address</span></div>
+  </div>
+  <div class="callout info" style="margin-top:14px"><b>How the address survives the trip</b>CloudFront copies the visitor's address into a header (<code>X-Storeease-Host</code>) and adds a secret (<code>X-Origin-Verify</code>). nginx refuses anything without the secret and passes the address on to the API.</div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>The stack</h2></div>
+  <div class="grid g3">
+    <div class="card"><h3>Backend</h3><ul><li>Python, FastAPI</li><li>SQLAlchemy (async), Alembic migrations</li><li>PostgreSQL 17 with Row-Level Security</li><li>Jinja2 emails, fpdf2 invoices</li></ul></div>
+    <div class="card"><h3>Frontend</h3><ul><li>React 19, Vite, TypeScript (strict)</li><li>React Router 7, TanStack Query 5</li><li>Tailwind 4, Radix UI, Recharts</li><li>Types generated from the API's OpenAPI</li></ul></div>
+    <div class="card"><h3>Homepage</h3><ul><li>Astro, static output</li><li>Plain CSS, ~9 KB of vanilla TS</li><li>GIFs fetched at build time, never by visitors</li></ul></div>
+    <div class="card"><h3>Infrastructure</h3><ul><li>Terraform (AWS provider 6)</li><li>S3, CloudFront, Route 53, ACM, ECR, SSM</li><li>One EC2 t3.micro with Docker Compose</li></ul></div>
+    <div class="card"><h3>Delivery</h3><ul><li>GitHub Actions, one checkbox per service</li><li>OIDC into AWS: no keys stored in GitHub</li></ul></div>
+    <div class="card"><h3>Third parties</h3><ul><li>Razorpay (subscriptions)</li><li>Let's Encrypt (server certificate)</li><li>GIPHY (homepage GIFs, build time)</li></ul></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Phase 2, when development is complete</h2></div>
+  <div class="flow">
+    <div class="step w"><b>Now</b><span>One server: API + Postgres. Email goes out through SES</span></div><span class="arr">→</span>
+    <div class="step g"><b>Later</b><span>Elastic Beanstalk for the API, RDS for Postgres</span></div>
+  </div>
+  <p class="muted small" style="margin-top:10px">The swap is small by design: point the three database settings at RDS, restore the latest backup, change where CloudFront sends <code>/api</code>. Details in <code>storeease-infra/docs/operations.md</code>.</p>
+</section>
+
+<nav class="pager" aria-label="Next and previous page"><a href="pricing.html">← Plans & billing</a><a href="tenancy.html">Keeping stores apart →</a></nav>
+<footer class="foot">Built from the docs in storeease-backend, storeease-frontend, storeease-infra and storeease-global (main, 25 Oct 2026). When a page and a repo doc disagree, the repo doc wins; fix this page in <code>storeease-infra/handbook/</code>.</footer>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>API &amp; Data · StoreEase Handbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@700&display=swap">
+<link rel="stylesheet" href="assets/handbook.css">
+</head>
+<body>
+<div class="frame">
+<aside class="side">
+<a class="brand" href="index.html"><b>St<i></i>reEase</b><span>Handbook</span></a>
+<nav class="nav" aria-label="Handbook pages">
+<div class="grp">Start</div>
+<a href="index.html">Start here</a>
+<div class="grp">The business</div>
+<a href="product.html">The product</a>
+<a href="pricing.html">Plans & billing</a>
+<div class="grp">How it is built</div>
+<a href="architecture.html">Architecture</a>
+<a href="tenancy.html">Keeping stores apart</a>
+<a href="apps.html">The apps</a>
+<a href="backend.html" aria-current="page">API & data</a>
+<div class="grp">Running it</div>
+<a href="deploy.html">Deploy & operate</a>
+<a href="local.html">Run it locally</a>
+<div class="grp">Reference</div>
+<a href="decisions.html">Decisions & open items</a>
+<a href="glossary.html">Glossary</a>
+</nav>
+</aside>
+<main>
+<header class="top">
+  <span class="eyebrow">How it is built</span>
+  <h1>API &amp; data</h1>
+  <p class="lead">One FastAPI service answers all five websites: 143 endpoints under <code>/api/v1</code>. The interactive spec is generated from the code at <code>/docs</code> when the API runs.</p>
+</header>
+
+<section>
+  <div class="sec-head"><h2>What the API covers</h2><p>Endpoints per area, from <code>storeease-backend/docs/api-endpoints.md</code>.</p></div>
+  <div class="bars" role="list">
+    <div class="bar" role="listitem"><span>Storefront (shoppers)</span><div class="t"><i style="width:100%"></i></div><b>25</b></div>
+    <div class="bar" role="listitem"><span>Platform admin</span><div class="t"><i style="width:88%"></i></div><b>22</b></div>
+    <div class="bar" role="listitem"><span>Catalogue</span><div class="t"><i style="width:64%"></i></div><b>16</b></div>
+    <div class="bar" role="listitem"><span>Staff login &amp; profile</span><div class="t"><i style="width:56%"></i></div><b>14</b></div>
+    <div class="bar" role="listitem"><span>Store settings &amp; domain</span><div class="t"><i style="width:52%"></i></div><b>13</b></div>
+    <div class="bar" role="listitem"><span>Billing &amp; add-ons</span><div class="t"><i style="width:44%"></i></div><b>11</b></div>
+    <div class="bar" role="listitem"><span>Inventory</span><div class="t"><i style="width:44%"></i></div><b>11</b></div>
+    <div class="bar" role="listitem"><span>Staff &amp; roles</span><div class="t"><i style="width:40%"></i></div><b>10</b></div>
+    <div class="bar" role="listitem"><span>Analytics</span><div class="t"><i style="width:32%"></i></div><b>8</b></div>
+    <div class="bar" role="listitem"><span>Customers</span><div class="t"><i style="width:24%"></i></div><b>6</b></div>
+    <div class="bar" role="listitem"><span>Orders (dashboard)</span><div class="t"><i style="width:12%"></i></div><b>3</b></div>
+    <div class="bar" role="listitem"><span>Signup, webhook, health</span><div class="t"><i style="width:16%"></i></div><b>4</b></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>The data, grouped</h2><p>Platform tables are shared by everyone. Store tables carry a <code>tenant_id</code> and are filtered by the database (<a href="tenancy.html">how</a>). Full ER diagram: <code>storeease-backend/docs/erd.svg</code>.</p></div>
+  <div class="grid g2">
+    <div class="card green"><h3>Platform (shared)</h3><ul><li><b>tenants</b>: one row per business, its address and status</li><li><b>users</b>: one global identity per person</li><li><b>platform_admins</b>: the StoreEase team</li><li><b>shoppers</b> + <b>shopper_addresses</b>: one person and their address book, for every store</li><li><b>email_verification_codes</b>: the owner's 6-digit code</li><li><b>plans</b>, MRR snapshots, webhook events, email log</li></ul></div>
+    <div class="card"><h3>Who works where</h3><ul><li><b>tenant_memberships</b>: person × business × owner/staff</li><li><b>staff_roles</b> + permissions</li><li>refresh tokens</li></ul></div>
+    <div class="card"><h3>Store setup &amp; catalogue</h3><ul><li><b>store_settings</b>: name, theme, colours, logo</li><li>domain verifications</li><li><b>categories</b>, <b>products</b> (stock count lives here), product images</li></ul></div>
+    <div class="card"><h3>Shoppers &amp; orders</h3><ul><li><b>customers</b>: the link between a shopper and one store (blocked, notes, first order), login codes</li><li><b>orders</b>, order items (address snapshot kept)</li><li>product ratings</li></ul></div>
+    <div class="card"><h3>Inventory</h3><ul><li><b>sales</b>: every stock-taking event (website orders automatically)</li><li><b>stock_adjustments</b>: restocks, write-offs, corrections</li><li>sales channels, add-ons</li></ul></div>
+    <div class="card"><h3>Billing</h3><ul><li><b>subscriptions</b>, <b>invoices</b>, <b>payments</b></li><li>billing notices (which reminder went out)</li><li>setup requests</li></ul></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Work that runs on its own</h2><p>Four loops run inside the API process. One API container means exactly one of each.</p></div>
+  <div class="grid g4">
+    <div class="card"><span class="ic">✉️</span><h3>Email sender</h3><p>Every 5 s. Sends queued order and welcome mail, retries with backoff.</p></div>
+    <div class="card"><span class="ic">💳</span><h3>Billing sweep</h3><p>Every 15 min. Trial reminders, graces, suspensions, monthly renewals in instant mode.</p></div>
+    <div class="card"><span class="ic">🌐</span><h3>Domain re-check</h3><p>Hourly. A verified custom domain whose DNS record vanished stops routing; the owner is emailed.</p></div>
+    <div class="card"><span class="ic">📈</span><h3>MRR snapshot</h3><p>Daily row per paying store, so platform charts have history.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Emails</h2><p>Plain text plus simple HTML, from templates in <code>app/emails/templates/</code>. On the server they are sent through Amazon SES (from <code>no-reply@storeease.in</code>); on a laptop they land in Mailpit.</p></div>
+  <div class="grid g3">
+    <div class="card"><h3>To shoppers</h3><p>Login code · order confirmation · confirmed · shipped · cancelled by the store. From "&lt;store&gt; via StoreEase", replies go to the store.</p></div>
+    <div class="card"><h3>To owners &amp; staff</h3><p>Welcome · email verification code · new order · staff invite · password reset/changed · email change · setup progress · suspended/reactivated.</p></div>
+    <div class="card"><h3>Billing</h3><p>Trial ending/ended · receipt · payment failed/halted · suspension soon · cancel ending.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>New on 25 Oct 2026</h2><p>Two routes are new; most of the rest changed behaviour behind existing ones.</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>What</th><th>Detail</th><th>Id</th></tr></thead>
+    <tbody>
+      <tr><td><code>POST /auth/me/email-verification</code></td><td>Mails a 6-digit code. Always answers 202; limited to 1 a minute, 5 an hour per person and 20 an hour per address</td><td>Q95</td></tr>
+      <tr><td><code>POST /auth/me/email-verification/confirm</code></td><td>Checks the code (10 minutes, 5 tries). <code>GET /auth/me</code> now says <code>email_verified</code></td><td>Q95</td></tr>
+      <tr><td>403 <code>email_not_verified</code></td><td>Settings, logo, catalogue writes, publish, subscribe and add-ons refuse until verified</td><td>Q95</td></tr>
+      <tr><td>Upload links</td><td>Presigned S3 links name the regional host, the only one the browser's security policy allows. No size limit is enforced on them yet</td><td>Q96</td></tr>
+      <tr><td>Product and category links</td><td>Made from the name (<code>-2</code>, <code>-3</code> on a clash); category names are unique per store; contact phone and texts are validated</td><td>Q97</td></tr>
+      <tr><td>Shopper accounts</td><td>Customer routes read the shopper behind the link; store customer lists show only people who ordered there</td><td>Q98</td></tr>
+    </tbody></table></div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Conventions</h2></div>
+  <div class="grid g3">
+    <div class="card"><h3>Thin routes</h3><p><code>app/api/v1/x.py</code> is the HTTP contract only; all logic lives in <code>app/services/x.py</code>.</p></div>
+    <div class="card"><h3>Stock moves one way</h3><p>Only through <code>app/services/stock.py</code>, so every change lands in the ledger. Oversell is a clean 409 listing every short line.</p></div>
+    <div class="card"><h3>Long lists use a cursor</h3><p>Sales and stock ledgers page with "load more", never page numbers, so page 5,000 is as fast as page 1.</p></div>
+    <div class="card"><h3>Errors carry a code</h3><p><code>store_suspended</code>, <code>addon_required</code>, <code>insufficient_access</code>, <code>plan_limit_reached</code>… the UI maps each to a clear screen.</p></div>
+    <div class="card"><h3>Emails after commit</h3><p>Links come from settings, never from the request's address (blocks host-header tricks).</p></div>
+    <div class="card"><h3>Docs in the same PR</h3><p>A behaviour change updates the endpoint index, the design doc, the ERD and the process diagram together.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Speed</h2><p>Targets: p95 under 200 ms for shop pages and dashboard lists, under 500 ms for reports, at 25 users at once. Measured locally on a database with 3,195 businesses.</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>At one user</th><th class="num">p50</th><th class="num">p95</th></tr></thead>
+    <tbody>
+      <tr><td>Storefront pages</td><td class="num">7-8 ms</td><td class="num">12-15 ms</td></tr>
+      <tr><td>Dashboard lists</td><td class="num">9-11 ms</td><td class="num">15-22 ms</td></tr>
+      <tr><td>Checkout (a real order)</td><td class="num">22 ms</td><td class="num">46 ms</td></tr>
+      <tr><td>Admin business list (after the fix)</td><td class="num">11 ms</td><td class="num">19 ms</td></tr>
+    </tbody></table></div>
+  <div class="callout warn" style="margin-top:12px"><b>Not proven yet</b>The 25-user target saturated one worker on the dev laptop (~95 requests/s). Repeat the load test on the server with several workers.</div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Tests</h2></div>
+  <div class="grid g4">
+    <div class="stat"><b>712</b><span>backend tests passing</span></div>
+    <div class="stat"><b>96%</b><span>coverage of services + core</span></div>
+    <div class="stat"><b>~1,500</b><span>SQL-injection fuzz requests</span></div>
+    <div class="stat"><b>6</b><span>end-to-end flows in a real browser</span></div>
+  </div>
+  <div class="tbl" style="margin-top:16px"><table>
+    <thead><tr><th>Layer</th><th>What</th><th>Run</th></tr></thead>
+    <tbody>
+      <tr><td>Backend unit</td><td>Pure logic, no database (~8 s)</td><td><code>pytest -m unit</code></td></tr>
+      <tr><td>Backend integration</td><td>Real Postgres; only SMTP, S3, Razorpay, DNS faked</td><td><code>pytest</code></td></tr>
+      <tr><td>Isolation + SQL injection</td><td>One store attacks another; every table must have a policy</td><td><code>pytest tests/security</code></td></tr>
+      <tr><td>Frontend unit + component</td><td>Every page state, every error code; accessibility (axe)</td><td><code>npm test</code></td></tr>
+      <tr><td>End to end</td><td>Signup → product → order → deliver → rate; roles; suspension; two businesses</td><td><code>npm run e2e</code></td></tr>
+    </tbody></table></div>
+</section>
+
+<nav class="pager" aria-label="Next and previous page"><a href="apps.html">← The apps</a><a href="deploy.html">Deploy & operate →</a></nav>
+<footer class="foot">Built from the docs in storeease-backend, storeease-frontend, storeease-infra and storeease-global (main, 25 Oct 2026). When a page and a repo doc disagree, the repo doc wins; fix this page in <code>storeease-infra/handbook/</code>.</footer>
+</main>
+</div>
+</body>
+</html>

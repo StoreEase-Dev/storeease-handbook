@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>StoreEase Handbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@700&display=swap">
+<link rel="stylesheet" href="assets/handbook.css">
+</head>
+<body>
+<div class="frame">
+<aside class="side">
+<a class="brand" href="index.html"><b>St<i></i>reEase</b><span>Handbook</span></a>
+<nav class="nav" aria-label="Handbook pages">
+<div class="grp">Start</div>
+<a href="index.html" aria-current="page">Start here</a>
+<div class="grp">The business</div>
+<a href="product.html">The product</a>
+<a href="pricing.html">Plans & billing</a>
+<div class="grp">How it is built</div>
+<a href="architecture.html">Architecture</a>
+<a href="tenancy.html">Keeping stores apart</a>
+<a href="apps.html">The apps</a>
+<a href="backend.html">API & data</a>
+<div class="grp">Running it</div>
+<a href="deploy.html">Deploy & operate</a>
+<a href="local.html">Run it locally</a>
+<div class="grp">Reference</div>
+<a href="decisions.html">Decisions & open items</a>
+<a href="glossary.html">Glossary</a>
+</nav>
+</aside>
+<main>
+<header class="top">
+  <span class="eyebrow">StoreEase handbook</span>
+  <h1>Everything about StoreEase, <span class="hl">on a few pages</span>.</h1>
+  <p class="lead">StoreEase puts India's small and home-based businesses online. A home baker, a tiffin service or a handicraft seller who sells on Instagram today gets a real shop at <code>theirname.storeease.in</code>, with a catalogue, orders, customers and analytics, for ₹499 a month.</p>
+  <p class="script" style="margin-top:14px">your hustle deserves a homepage</p>
+</header>
+
+<section>
+  <div class="grid g4">
+    <div class="stat"><b>₹499</b><span>a month, the Chai plan</span></div>
+    <div class="stat"><b>48 h</b><span>to go online with done-for-you setup</span></div>
+    <div class="stat"><b>3</b><span>storefront designs to pick from</span></div>
+    <div class="stat"><b>Live</b><span>on AWS since 24 Oct 2026</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Where to start</h2><p>Pick the path that matches why you're here.</p></div>
+  <div class="grid g3">
+    <a class="card bold" href="product.html"><span class="ic">🤝</span><h3>Partner or new to the business</h3><p>What we sell, who uses it, what it costs.</p><span class="go">The product → Plans &amp; billing →</span></a>
+    <a class="card bold" href="architecture.html"><span class="ic">🧑‍💻</span><h3>Developer</h3><p>How the pieces fit, how stores are kept apart, how to run it.</p><span class="go">Architecture → Run locally →</span></a>
+    <a class="card bold" href="deploy.html"><span class="ic">🛠️</span><h3>Running it in production</h3><p>Deploys, the server, backups, costs, what went wrong the first time.</p><span class="go">Deploy &amp; operate →</span></a>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Four kinds of people use it</h2></div>
+  <div class="grid g4">
+    <div class="card"><span class="ic">🧑‍🍳</span><h3>Business owner</h3><p>Signs up, adds products, picks a look, publishes, handles orders, pays monthly.</p><span class="chip">dashboard.storeease.in</span></div>
+    <div class="card"><span class="ic">🧑‍💼</span><h3>Staff</h3><p>Helps the owner. Sees only what their role allows (orders only, catalogue only…).</p><span class="chip">name.storeease.in/dashboard</span></div>
+    <div class="card"><span class="ic">🛍️</span><h3>Shopper</h3><p>Browses a store, logs in with an emailed code, orders. One StoreEase account works in every shop. Pays the store directly (COD/UPI).</p><span class="chip">name.storeease.in</span></div>
+    <div class="card"><span class="ic">🛡️</span><h3>StoreEase team</h3><p>Sees every business, suspends abuse, tracks revenue (MRR), handles setup requests.</p><span class="chip">admin.storeease.in</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Four code repositories</h2><p>All on GitHub under <code>StoreEase-Dev</code>. Each has a <code>CLAUDE.md</code> (rules and status) and a <code>docs/</code> folder.</p></div>
+  <div class="grid g2">
+    <div class="card"><h3>storeease-global</h3><p>The marketing homepage at storeease.in. Astro, plain CSS, playful memes.</p><div class="chips"><span class="chip">Astro</span><span class="chip">static</span></div></div>
+    <div class="card"><h3>storeease-frontend <span class="muted small">(GitHub: storeo-frontend)</span></h3><p>The four apps: account (login, signup), dashboard, storefront with 3 templates, admin.</p><div class="chips"><span class="chip">React 19</span><span class="chip">Vite</span><span class="chip">TypeScript</span></div></div>
+    <div class="card"><h3>storeease-backend</h3><p>One API for everyone, the database and its safety rules, emails, billing.</p><div class="chips"><span class="chip">Python</span><span class="chip">FastAPI</span><span class="chip">PostgreSQL 17</span></div></div>
+    <div class="card"><h3>storeease-infra</h3><p>The AWS setup (Terraform), the deploy robot (GitHub Actions), the server's runtime, and this handbook.</p><div class="chips"><span class="chip">Terraform</span><span class="chip">GitHub Actions</span><span class="chip">Docker</span></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Where things stand</h2></div>
+  <div class="grid g2">
+    <div class="callout ok"><b>Built and deployed</b>Signup to order, end to end. Catalogue, orders, customers, inventory, analytics, staff roles, store look and 3 templates, billing (in no-payment "instant" mode), platform admin.</div>
+    <div class="callout info"><b>Merged on 25 Oct, live with the next Deploy</b>Email verification for new owners, playful pages for closed and unpublished shops, "Login" that resumes your session, one shopper account across shops, shop links made from product names, store logo in the dashboard, email through Amazon SES. <a href="decisions.html">What changed &rarr;</a></div>
+    <div class="callout warn"><b>Next up</b>Razorpay test (needs Subscriptions switched on), AWS approval for SES production access, custom domains end to end, then RDS when development is complete. <a href="decisions.html">All open items →</a></div>
+  </div>
+</section>
+
+<nav class="pager" aria-label="Next and previous page"><span></span><a href="product.html">The product →</a></nav>
+<footer class="foot">Built from the docs in storeease-backend, storeease-frontend, storeease-infra and storeease-global (main, 25 Oct 2026). When a page and a repo doc disagree, the repo doc wins; fix this page in <code>storeease-infra/handbook/</code>.</footer>
+</main>
+</div>
+</body>
+</html>
