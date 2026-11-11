@@ -77,15 +77,48 @@
       <path d="M80 88 C80 150,150 155,201 155" class="wire-d" marker-end="url(#a2)"/><text x="40" y="128" class="t-xs">shopper or store</text>
       <path d="M275 88V126" class="wire-d" marker-end="url(#a2)"/><text x="283" y="112" class="t-xs">store only</text>
     </svg>
-    <figcaption>Shoppers can cancel only while pending; after that they contact the store. Checkout has no online payment: the store collects cash on delivery or UPI itself.</figcaption>
+    <figcaption>Shoppers can cancel only while pending; after that they contact the store. Payment is separate from this journey: the store collects cash on delivery or UPI itself (below).</figcaption>
   </figure>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Paying and after-sale</h2><p>StoreEase never holds or moves a shopper's money. The shop is paid, and refunds, by itself.</p></div>
+  <h3 style="margin:0 0 10px">How a shopper pays</h3>
+  <div class="flow">
+    <div class="step"><b>Choose</b><span>At checkout: <b>Cash on delivery</b> or <b>Pay to the shop's UPI</b>, whichever the shop switched on</span></div><span class="arr">→</span>
+    <div class="step"><b>Pay</b><span>UPI: a QR code (desktop) or "Pay with UPI app" (phone) with the exact amount and the note <code>Order 1042 · Priya Pickles</code> filled in</span></div><span class="arr">→</span>
+    <div class="step w"><b>"I've paid"</b><span>One tap. The order shows <b>Payment to confirm</b> to the shop</span></div><span class="arr">→</span>
+    <div class="step g"><b>Payment received</b><span>The shop checks its UPI app and taps this. Only then is the order <b>paid</b></span></div>
+  </div>
+  <p class="muted small" style="margin:10px 0 22px">Cash-on-delivery orders become paid automatically when the shop marks them delivered. The shop's UPI ID is not in the shop's public data; it appears only inside the pay link of that shopper's own order.</p>
+
+  <h3 style="margin:0 0 10px">Returns and replacements</h3>
+  <p class="muted small" style="margin:0 0 10px">The owner switches <b>Return</b> and <b>Replacement</b> on per product (both off by default) and sets two windows (days after delivery, 7 by default). A request covers one or more items of one delivered order, one reason, and 1 to 5 photos.</p>
+  <div class="flow">
+    <div class="step"><b>Requested</b><span>by the shopper; can be withdrawn until decided</span></div><span class="arr">→</span>
+    <div class="step"><b>Approved</b><span>the shop adds instructions (or <b>rejects</b> with a reason)</span></div><span class="arr">→</span>
+    <div class="step"><b>Item received</b><span>optionally put back into stock</span></div><span class="arr">→</span>
+    <div class="step g"><b>Refunded</b><span>amount, UPI or bank, reference, paid by the shop</span></div>
+  </div>
+  <div class="flow" style="margin-top:10px">
+    <div class="step"><b>Requested</b><span>replacement</span></div><span class="arr">→</span>
+    <div class="step"><b>Approved</b><span>or rejected</span></div><span class="arr">→</span>
+    <div class="step"><b>Old item received</b><span>stock is taken for the new one when shipped</span></div><span class="arr">→</span>
+    <div class="step"><b>Replacement shipped</b><span>no new order, no new payment</span></div><span class="arr">→</span>
+    <div class="step g"><b>Delivered</b><span>done</span></div>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card"><h3>Refunds go where the shopper says</h3><p>A UPI ID or a bank account (holder, account number, IFSC). No cash, because shopper and shop may be in different cities. If the money doesn't arrive the shopper taps "I haven't received it" and the shop is alerted.</p></div>
+    <div class="card"><h3>Privacy rules</h3><ul><li>Bank details and photos are personal data: the account number is <b>masked</b> for staff with Returns "view" and shown in full only to "manage" and the owner</li><li>Photos live in a <b>private bucket</b>, shown through links that last 5 minutes</li><li>90 days after a request is final, photos and refund details are deleted</li><li>Emails never carry bank details</li></ul></div>
+  </div>
 </section>
 
 <section>
   <div class="sec-head"><h2>What an owner gets</h2></div>
   <div class="grid g3">
     <div class="card"><h3>📦 Catalogue</h3><ul><li>Products with photos, categories, featured items</li><li>Shop links are made from the name; nobody types one</li><li>Stock count per product</li><li>CSV import (with example rows), up to 500 rows</li></ul></div>
-    <div class="card"><h3>🧾 Orders</h3><ul><li>Status tabs, search, dates</li><li>Email on every new order</li><li>"Only N left" protection: never oversells</li></ul></div>
+    <div class="card"><h3>🧾 Orders</h3><ul><li>Status tabs, search, dates</li><li>Email on every new order, saying how the shopper pays</li><li><b>Payment to confirm</b>: UPI orders wait for "Payment received"</li><li>"Only N left" protection: never oversells</li></ul></div>
+    <div class="card"><h3>↩️ Returns</h3><ul><li>Choose per product: return, replacement, or neither</li><li>Approve or reject, record the refund, restock</li><li>Staff area: none / view / manage</li></ul></div>
     <div class="card"><h3>👥 Customers</h3><ul><li>Only people who ordered here; how often, total spent (delivered only)</li><li>Private notes, CSV export</li><li>Block an abusive customer</li></ul></div>
     <div class="card"><h3>📊 Analytics</h3><ul><li>Money received vs expected, orders, customers</li><li>Best sellers, busiest hours, low stock</li><li>Always compared with the period before</li></ul></div>
     <div class="card"><h3>🔐 Staff &amp; roles</h3><ul><li>Invite staff, give each one role</li><li>Presets: Manager, Shop assistant, Packer</li><li>No role = sees nothing</li></ul></div>
@@ -102,8 +135,8 @@
     <div class="step"><b>Browse</b><span>Home, catalogue, product pages in the store's template</span></div><span class="arr">→</span>
     <div class="step"><b>Cart</b><span>Kept in the browser, per store</span></div><span class="arr">→</span>
     <div class="step"><b>Log in</b><span>6-digit code by email. No passwords for shoppers</span></div><span class="arr">→</span>
-    <div class="step"><b>Checkout</b><span>Pick or add an address, place the order</span></div><span class="arr">→</span>
-    <div class="step g"><b>Track</b><span>Confirmation page, emails, "My orders"</span></div>
+    <div class="step"><b>Checkout</b><span>Pick or add an address, choose how to pay, place the order</span></div><span class="arr">→</span>
+    <div class="step g"><b>Track</b><span>Confirmation page, emails, "My orders", and "Return or replace" after delivery</span></div>
   </div>
   <p class="muted small" style="margin-top:12px">A shopper has <b>one StoreEase account</b>: the same name, phone and saved addresses at every shop. Login is still an emailed code on each shop's own address, and shoppers are told so ("Your details are saved with StoreEase and work in any StoreEase shop"). There is no guest checkout. <a href="tenancy.html">What a shop can and can't see &rarr;</a></p>
 </section>
@@ -114,7 +147,7 @@
     <div class="card"><h3>Businesses</h3><p>Search every store, see plan, add-ons, orders and revenue. Suspend (with a reason the owner is emailed), reactivate, delete (soft, restorable), switch add-ons on.</p></div>
     <div class="card"><h3>Platform analytics</h3><p>MRR and ARR, new / expansion / churn, trial conversion by signup month, top businesses, stores at risk (no orders in 30 days, or orders halved).</p></div>
     <div class="card"><h3>Setup requests</h3><p>Owners who bought done-for-you setup (₹1,299): their notes and photo link, a 48-hour target, Start / Mark live / Cancel.</p></div>
-    <div class="card"><h3>Out of scope for now</h3><p>Platform health dashboards, WhatsApp notifications, written reviews, shopper online payment. <a href="decisions.html">See why →</a></p></div>
+    <div class="card"><h3>Out of scope for now</h3><p>Platform health dashboards, WhatsApp notifications, written reviews, taking shoppers' money through StoreEase (card or UPI collection). <a href="decisions.html">See why →</a></p></div>
   </div>
 </section>
 

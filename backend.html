@@ -63,18 +63,19 @@
     <div class="card green"><h3>Platform (shared)</h3><ul><li><b>tenants</b>: one row per business, its address and status</li><li><b>users</b>: one global identity per person</li><li><b>platform_admins</b>: the StoreEase team</li><li><b>shoppers</b> + <b>shopper_addresses</b>: one person and their address book, for every store</li><li><b>email_verification_codes</b>: the owner's 6-digit code</li><li><b>plans</b>, MRR snapshots, webhook events, email log</li></ul></div>
     <div class="card"><h3>Who works where</h3><ul><li><b>tenant_memberships</b>: person × business × owner/staff</li><li><b>staff_roles</b> + permissions</li><li>refresh tokens</li></ul></div>
     <div class="card"><h3>Store setup &amp; catalogue</h3><ul><li><b>store_settings</b>: name, theme, colours, logo</li><li>domain verifications</li><li><b>categories</b>, <b>products</b> (stock count lives here), product images</li></ul></div>
-    <div class="card"><h3>Shoppers &amp; orders</h3><ul><li><b>customers</b>: the link between a shopper and one store (blocked, notes, first order), login codes</li><li><b>orders</b>, order items (address snapshot kept)</li><li>product ratings</li></ul></div>
+    <div class="card"><h3>Shoppers &amp; orders</h3><ul><li><b>customers</b>: the link between a shopper and one store (blocked, notes, first order), login codes</li><li><b>orders</b>, order items (address snapshot kept)</li><li>product ratings</li><li><b>return_requests</b> with their items, photos and history; orders also carry the payment method and status</li></ul></div>
     <div class="card"><h3>Inventory</h3><ul><li><b>sales</b>: every stock-taking event (website orders automatically)</li><li><b>stock_adjustments</b>: restocks, write-offs, corrections</li><li>sales channels, add-ons</li></ul></div>
     <div class="card"><h3>Billing</h3><ul><li><b>subscriptions</b>, <b>invoices</b>, <b>payments</b></li><li>billing notices (which reminder went out)</li><li>setup requests</li></ul></div>
   </div>
 </section>
 
 <section>
-  <div class="sec-head"><h2>Work that runs on its own</h2><p>Four loops run inside the API process. One API container means exactly one of each.</p></div>
+  <div class="sec-head"><h2>Work that runs on its own</h2><p>Five loops run inside the API process. One API container means exactly one of each.</p></div>
   <div class="grid g4">
     <div class="card"><span class="ic">✉️</span><h3>Email sender</h3><p>Every 5 s. Sends queued order and welcome mail, retries with backoff.</p></div>
     <div class="card"><span class="ic">💳</span><h3>Billing sweep</h3><p>Every 15 min. Trial reminders, graces, suspensions, monthly renewals in instant mode.</p></div>
     <div class="card"><span class="ic">🌐</span><h3>Domain re-check</h3><p>Hourly. A verified custom domain whose DNS record vanished stops routing; the owner is emailed.</p></div>
+    <div class="card"><span class="ic">↩️</span><h3>Returns sweep</h3><p>Hourly. One reminder email per store for requests waiting 3 days or refunds unpaid 7 days; 90 days after a request is final it deletes the photos and the bank/UPI details.</p></div>
     <div class="card"><span class="ic">📈</span><h3>MRR snapshot</h3><p>Daily row per paying store, so platform charts have history.</p></div>
   </div>
 </section>
@@ -82,8 +83,8 @@
 <section>
   <div class="sec-head"><h2>Emails</h2><p>Plain text plus simple HTML, from templates in <code>app/emails/templates/</code>. On the server they are sent through Amazon SES (from <code>no-reply@storeease.in</code>); on a laptop they land in Mailpit.</p></div>
   <div class="grid g3">
-    <div class="card"><h3>To shoppers</h3><p>Login code · order confirmation · confirmed · shipped · cancelled by the store. From "&lt;store&gt; via StoreEase", replies go to the store.</p></div>
-    <div class="card"><h3>To owners &amp; staff</h3><p>Welcome · email verification code · new order · staff invite · password reset/changed · email change · setup progress · suspended/reactivated.</p></div>
+    <div class="card"><h3>To shoppers</h3><p>Login code · order confirmation · confirmed · shipped · cancelled by the store · payment received · return or replacement update (one template, every status). Order confirmation says how to pay. From "&lt;store&gt; via StoreEase", replies go to the store.</p></div>
+    <div class="card"><h3>To owners &amp; staff</h3><p>Welcome · email verification code · new order (names the payment method) · return requested · reminders on stuck requests · staff invite · password reset/changed · email change · setup progress · suspended/reactivated.</p></div>
     <div class="card"><h3>Billing</h3><p>Trial ending/ended · receipt · payment failed/halted · suspension soon · cancel ending.</p></div>
   </div>
 </section>

@@ -17,7 +17,7 @@ open `index.html` in a browser, no build step or server needed (fonts load from 
 | `decisions.html` | Key decisions with their ids, open items, deliberately deferred work |
 | `glossary.html` | Business, technical and AWS terms in plain language |
 
-**Source of truth:** the repos' own `CLAUDE.md` and `docs/`. This handbook summarises them as of 25 Oct 2026. When a
+**Source of truth:** the repos' own `CLAUDE.md` and `docs/`. This handbook summarises them as of 11 Nov 2026 (round 3: shop payments, returns and replacements). When a
 decision or behaviour changes, update the repo doc first, then the matching page here.
 
 **Editing:** each page is self-contained HTML sharing `assets/handbook.css` (brand tokens from

@@ -139,6 +139,24 @@ budget:  monthly_usd 15   → email at 80%</code></pre>
 </section>
 
 <section>
+  <div class="sec-head"><h2>Razorpay go-live (StoreEase's own subscriptions)</h2><p>The code is finished; it needs the owner's keys. Details: <code>storeease-backend/docs/billing-setup.md</code>. Shoppers' money never goes through Razorpay.</p></div>
+  <div class="grid g3">
+    <div class="card"><span class="chip c-warn" style="justify-self:start">1 · Razorpay, test mode</span><h3>Keys and webhook</h3><p>Settings &rarr; API Keys &rarr; generate. Settings &rarr; Webhooks &rarr; add <code>https://dashboard.storeease.in/api/v1/webhooks/razorpay</code>, all <code>subscription.*</code> events, a long random secret.</p></div>
+    <div class="card"><span class="chip c-warn" style="justify-self:start">2 · SSM</span><h3>Three values</h3><p><code>RAZORPAY_KEY_ID</code>, <code>RAZORPAY_KEY_SECRET</code>, <code>RAZORPAY_WEBHOOK_SECRET</code> under <code>/storeease/dev/backend/</code>, as SecureString. Never in git or chat.</p></div>
+    <div class="card"><span class="chip c-warn" style="justify-self:start">3 · Deploy Backend</span><h3>Try it</h3><p>Dashboard &rarr; Billing &rarr; Subscribe with the test card <code>4718 6091 0820 4366</code>; in Razorpay choose "Charge this now". Billing must show <b>active</b> and an invoice.</p></div>
+  </div>
+  <div class="callout warn" style="margin-top:14px"><b>Going live</b>Repeat with live keys and a live webhook that has its own secret. Test and live never share a database: Razorpay plan ids belong to one key mode (Q94). Without keys, billing keeps running in instant mode.</div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>The private photo bucket</h2></div>
+  <div class="grid g2">
+    <div class="card"><h3>Where</h3><p><code>&lt;prefix&gt;-private-uploads-&lt;account&gt;</code>, created by Terraform apply; its name reaches the API as the SSM value <code>PRIVATE_UPLOADS_BUCKET</code>. Photos sit under <code>returns/&lt;store&gt;/&lt;customer&gt;/</code>. Deploy order for a change like this: Terraform apply, then Backend.</p></div>
+    <div class="card"><h3>Rules</h3><ul><li>Don't copy photos out or make the bucket public</li><li>No S3 lifecycle rule: the backend sweep deletes photos 90 days after a request is final</li><li>If the SSM value is missing, photo upload answers 503 <code>uploads_not_configured</code></li></ul></div>
+  </div>
+</section>
+
+<section>
   <div class="sec-head"><h2>Security headers and framing</h2></div>
   <div class="callout info"><b>Who may frame whom</b>The dashboard shows the shop in a preview frame on the same address, so only the <b>app</b> distribution sends <code>frame-ancestors 'self'</code> and <code>X-Frame-Options: SAMEORIGIN</code>. The homepage and the uploads site stay at "nobody may frame". Every shop is its own address, so one shop still cannot frame another, and outside sites cannot frame anything. The same policy lists the uploads bucket's own S3 address, because browsers upload photos straight to it. Decision D-AWS7.</div>
 </section>

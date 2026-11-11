@@ -108,6 +108,11 @@
 </section>
 
 <section>
+  <div class="sec-head"><h2>A second, private bucket for return photos</h2><p>Customers' return photos are personal data, so they do not go in the uploads bucket.</p></div>
+  <div class="callout info"><b>No CloudFront, no public link</b>The <b>private uploads bucket</b> has no CloudFront in front. The API checks who is asking, then hands the browser a link that works for <b>5 minutes</b> (to upload a photo, or to look at one). The backend deletes a request's photos 90 days after it is final. Only the bucket's own address is added to the browser rules (CSP). Decision D-AWS8.</div>
+</section>
+
+<section>
   <div class="sec-head"><h2>The stack</h2></div>
   <div class="grid g3">
     <div class="card"><h3>Backend</h3><ul><li>Python, FastAPI</li><li>SQLAlchemy (async), Alembic migrations</li><li>PostgreSQL 17 with Row-Level Security</li><li>Jinja2 emails, fpdf2 invoices</li></ul></div>
