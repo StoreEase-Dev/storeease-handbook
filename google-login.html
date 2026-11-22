@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Google login · StoreEase Handbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@700&display=swap">
+<link rel="stylesheet" href="assets/handbook.css">
+<style>
+
+/* Template platform page: adds interactive parts to the handbook look. */
+.seg{display:inline-flex;gap:4px;padding:4px;border:2px solid var(--fg);border-radius:999px;background:var(--paper);flex-wrap:wrap}
+.seg button{font:inherit;font-weight:800;font-size:.86rem;border:0;background:none;color:var(--fg);padding:6px 14px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--green);color:var(--ink)}
+.seg button:hover:not([aria-pressed="true"]){background:var(--tint)}
+.btn{font:inherit;font-weight:800;font-size:.9rem;border:2px solid var(--fg);background:var(--paper);color:var(--fg);padding:7px 16px;border-radius:999px;cursor:pointer;box-shadow:3px 3px 0 var(--shadow)}
+.btn:hover{transform:translate(-1px,-1px)}
+.btn:active{transform:translate(2px,2px);box-shadow:none}
+.btn.go{background:var(--green);color:var(--ink)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hint{font-size:.85rem;color:var(--muted)}
+
+/* journey explorer */
+.lanes{display:grid;gap:14px}
+.lane{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;align-items:start}
+.lane > b{font-family:var(--font-display);font-size:1.05rem;padding-top:10px}
+.steps{display:flex;flex-wrap:wrap;gap:8px}
+.stepbtn{font:inherit;text-align:left;flex:1 1 150px;min-width:0;background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:9px 12px;cursor:pointer;color:var(--fg);display:grid;gap:2px}
+.stepbtn b{font-size:.94rem}
+.stepbtn span{font-size:.82rem;color:var(--muted)}
+.stepbtn:hover{border-color:var(--fg)}
+.stepbtn[aria-pressed="true"]{border-color:var(--green-text);background:var(--tint)}
+.stepbtn.gate{border-style:dashed}
+.detail{margin-top:16px;background:var(--paper);border:2px solid var(--fg);border-radius:18px;padding:16px 18px;box-shadow:4px 4px 0 var(--shadow);display:grid;gap:8px;max-width:78ch}
+.detail h3{font-size:1.15rem}
+.detail ul{margin:0;padding-left:20px;display:grid;gap:4px;color:var(--muted)}
+@media (max-width:640px){.lane{grid-template-columns:1fr}.lane > b{padding-top:0}}
+
+/* editor mock */
+.ed{display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;background:var(--paper);border:2px solid var(--fg);border-radius:20px;padding:14px;box-shadow:5px 5px 0 var(--shadow)}
+@media (max-width:900px){.ed{grid-template-columns:1fr}}
+.ed-top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:2px dashed var(--line);padding-bottom:12px}
+.ed-top .t{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ed-top select{font:inherit;font-weight:700;border:2px solid var(--line);border-radius:10px;padding:4px 8px;background:var(--bg);color:var(--fg)}
+.params{display:grid;gap:12px;align-content:start;min-width:0}
+.params details{border:2px solid var(--line);border-radius:14px;padding:8px 12px;background:var(--bg)}
+.params summary{font-weight:800;cursor:pointer}
+.params .f{display:grid;gap:4px;margin-top:10px}
+.params label{font-size:.8rem;font-weight:800;color:var(--muted);letter-spacing:.02em}
+.params input[type=text]{font:inherit;border:2px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--paper);color:var(--fg);min-width:0}
+.params input[type=text]:focus{border-color:var(--green-text);outline:none}
+.params .sw-row{display:flex;gap:6px;flex-wrap:wrap}
+.params .swatch{width:30px;height:30px;border-radius:50%;border:3px solid var(--paper);outline:2px solid var(--line);cursor:pointer;padding:0}
+.params .swatch[aria-pressed="true"]{outline:3px solid var(--fg)}
+.params .tog{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:650}
+.params .from{font-size:.74rem;color:var(--green-text);font-weight:800}
+.stage{background:var(--chip);border-radius:16px;padding:14px;display:grid;justify-items:center;align-content:start;min-width:0;min-height:420px}
+.device{width:100%;transition:width .25s ease;border-radius:14px;overflow:hidden;border:2px solid var(--fg);background:#ffffff;color:#1d2433}
+.device.mobile{width:min(100%,360px);border-width:8px;border-color:#11163a;border-radius:30px}
+/* the mini shop inside the preview uses its own fixed palette: it stands for a shopper's view, light in both themes */
+.shop{--acc:#c2410c;font-family:var(--font-body)}
+.shop .bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #e6e8ef}
+.shop .logo{width:28px;height:28px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:800;font-size:.8rem;flex:none}
+.shop .name{font-weight:800}
+.shop .menu{margin-left:auto;font-size:.8rem;color:#5b6478;display:flex;gap:12px}
+.shop .hero{padding:26px 18px;background:linear-gradient(0deg,#fff,#fff6ef);display:grid;gap:8px}
+.shop .hero h4{margin:0;font-family:var(--font-display);font-size:1.5rem;line-height:1.1;color:#1d2433}
+.shop .hero p{color:#5b6478;font-size:.92rem}
+.shop .cta{justify-self:start;background:var(--acc);color:#fff;border-radius:999px;padding:7px 16px;font-weight:800;font-size:.86rem}
+.shop .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:14px}
+.device.mobile .shop .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.device.mobile .shop .menu{display:none}
+.shop .p{border:1px solid #e6e8ef;border-radius:10px;overflow:hidden;font-size:.8rem}
+.shop .p i{display:block;height:64px;background:#f3e3d3}
+.shop .p:nth-child(2) i{background:#e9e1c9}.shop .p:nth-child(3) i{background:#dfe9d5}.shop .p:nth-child(4) i{background:#f0d9d2}
+.shop .p div{padding:6px 8px}.shop .p b{display:block;color:#1d2433}
+.shop .quotes{margin:0 14px 14px;padding:10px 12px;border-radius:10px;background:#f6f7fb;font-size:.82rem;color:#5b6478}
+.state{font-size:.8rem}
+
+/* versions */
+.vbox{display:grid;gap:14px;background:var(--paper);border:2px solid var(--line);border-radius:20px;padding:16px}
+.vline{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ver{border:2px solid var(--line);border-radius:12px;padding:6px 10px;font-weight:800;font-size:.9rem;display:grid;gap:2px;min-width:92px;background:var(--bg)}
+.ver span{font-size:.74rem;font-weight:700;color:var(--muted)}
+.ver.pub{border-color:var(--green-text)}
+.ver.draft{border-style:dashed}
+.ver.pinned{background:var(--tint);border-color:var(--green-text);box-shadow:3px 3px 0 var(--shadow)}
+.vlog{font-size:.88rem;color:var(--muted);display:grid;gap:4px;max-height:150px;overflow:auto;border-top:2px dashed var(--line);padding-top:10px}
+.vlog b{color:var(--fg)}
+
+/* visibility */
+.vis{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px}
+@media (max-width:820px){.vis{grid-template-columns:1fr}}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tcard{border:2px solid var(--line);border-radius:14px;overflow:hidden;background:var(--paper);display:grid;font-size:.86rem}
+.tcard i{display:block;height:56px}
+.tcard div{padding:8px 10px;display:grid;gap:4px}
+.tcard.locked{opacity:.7}
+.tcard .lk{font-size:.75rem;font-weight:800;color:var(--warn)}
+.tcard .pv{font-size:.75rem;font-weight:800;color:var(--info)}
+.field{display:grid;gap:4px}
+.field label{font-size:.8rem;font-weight:800;color:var(--muted)}
+.field select{font:inherit;font-weight:700;border:2px solid var(--line);border-radius:10px;padding:6px 8px;background:var(--paper);color:var(--fg)}
+
+/* waves */
+.wave{border:2px solid var(--line);border-radius:16px;background:var(--paper);padding:0}
+.wave summary{cursor:pointer;padding:12px 16px;font-weight:800;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.wave[open] summary{border-bottom:2px dashed var(--line)}
+.wave .in{padding:12px 16px;display:grid;gap:8px}
+.wave .in ul{margin:0;padding-left:20px;display:grid;gap:4px;color:var(--muted);font-size:.94rem}
+.term{background:#0b1233;color:#d7f5e1;border-radius:14px;padding:12px 14px;font-family:var(--mono);font-size:.82rem;line-height:1.6;overflow-x:auto;white-space:pre}
+.term .ok{color:#5fd37f}.term .wa{color:#ffc46b}.term .dim{color:#8f9bc6}
+
+</style>
+</head>
+<body>
+<div class="frame">
+<aside class="side">
+<a class="brand" href="index.html"><b>St<i></i>reEase</b><span>Handbook</span></a>
+<nav class="nav" aria-label="Handbook pages">
+<div class="grp">Start</div>
+<a href="index.html">Start here</a>
+<div class="grp">The business</div>
+<a href="product.html">The product</a>
+<a href="pricing.html">Plans & billing</a>
+<a href="template-platform.html">Template platform</a>
+<a href="google-login.html" aria-current="page">Google login</a>
+<div class="grp">How it is built</div>
+<a href="architecture.html">Architecture</a>
+<a href="tenancy.html">Keeping stores apart</a>
+<a href="apps.html">The apps</a>
+<a href="backend.html">API & data</a>
+<div class="grp">Running it</div>
+<a href="deploy.html">Deploy & operate</a>
+<a href="local.html">Run it locally</a>
+<div class="grp">Reference</div>
+<a href="decisions.html">Decisions & open items</a>
+<a href="glossary.html">Glossary</a>
+</nav>
+</aside>
+<main>
+<header class="top" id="top">
+  <span class="eyebrow">Planned · 22 Nov 2026</span>
+  <h1>Log in and sign up <span class="hl">with Google</span>.</h1>
+  <p class="lead">Owners and staff get a <b>Continue with Google</b> button on the login and signup pages at <code>dashboard.storeease.in</code>. No password to make up, no email code to type: Google has already checked the address. Everything that works today keeps working.</p>
+  <p class="script" style="margin-top:14px">one tap to your shop</p>
+  <div class="grid g3" style="margin-top:24px">
+    <div class="stat"><b>1 button</b><span>on login, signup and staff invites</span></div>
+    <div class="stat"><b>3 outcomes</b><span>logged in, account linked, or a short signup step</span></div>
+    <div class="stat"><b>₹0</b><span>Google charges nothing for sign-in</span></div>
+  </div>
+</header>
+
+<section id="try">
+  <div class="sec-head"><h2>Try it</h2><p>Pick which Google account the person uses, then press Continue with Google. The result shows what StoreEase does in each case.</p></div>
+  <div class="ed">
+    <div class="params">
+      <details open><summary>The Google account</summary>
+        <div class="f" role="radiogroup" aria-label="Google account" id="glAcc" style="gap:8px">
+          <label class="tog"><input type="radio" name="glacc" value="linked" checked> ravi@gmail.com: already linked</label>
+          <label class="tog"><input type="radio" name="glacc" value="match"> priya.pickles@gmail.com: has a password account</label>
+          <label class="tog"><input type="radio" name="glacc" value="new"> asha.bakes@gmail.com: new to StoreEase</label>
+          <label class="tog"><input type="radio" name="glacc" value="invite"> neha@gmail.com: invited as staff</label>
+        </div>
+      </details>
+      <p class="hint" id="glHint"></p>
+      <button type="button" class="btn" id="glReset">Start over</button>
+    </div>
+    <div class="stage" style="min-height:380px">
+      <div class="device mobile" style="width:min(100%,360px)">
+        <div class="shop" id="glScreen" style="min-height:440px;padding:18px;display:grid;gap:12px;align-content:start"></div>
+      </div>
+    </div>
+  </div>
+  <p class="hint" style="margin-top:10px">Example accounts and screens; the real pages use the account app's design.</p>
+</section>
+
+<section id="flow">
+  <div class="sec-head"><h2>What happens behind the button</h2><p>Google proves who the person is; StoreEase decides what that means for their account.</p></div>
+  <div class="flow">
+    <div class="step"><b>Continue with Google</b><span>Google's own pop-up: pick an account</span></div><span class="arr">→</span>
+    <div class="step"><b>Signed token</b><span>Google says: this is X, email verified</span></div><span class="arr">→</span>
+    <div class="step"><b>StoreEase checks it</b><span>signature, our app, not expired, email verified</span></div><span class="arr">→</span>
+    <div class="step g"><b>One of three outcomes</b><span>log in, link and log in, or finish signup</span></div>
+  </div>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="card"><h3>Already linked</h3><p>Logged in exactly like a password login: to the dashboard, or the business picker for owners of several shops.</p></div>
+    <div class="card"><h3>Email already has an account</h3><p>Google is linked to that account and they're in. An email confirms "Google sign-in was added", so nothing happens silently.</p></div>
+    <div class="card green"><h3>New email</h3><p>"Finish setting up your shop": name and email from Google, plus business name, shop link and mobile. No email code needed.</p></div>
+  </div>
+</section>
+
+<section id="changes">
+  <div class="sec-head"><h2>What changes, where</h2><p>About a week of work in three pull requests, built directly in the main repos.</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Where</th><th>Change</th></tr></thead>
+    <tbody>
+      <tr><td><b>Google Cloud</b> (owner, about 20 min, free)</td><td>A project, the consent screen (StoreEase name, logo, support email, privacy and terms links), a web client allowed on <code>dashboard.storeease.in</code>. Gives a client ID that isn't secret.</td></tr>
+      <tr><td><b>Backend</b></td><td>Links between Google and StoreEase accounts; a sign-in endpoint that checks Google's token; signup without a password for Google-verified emails; staff invites accepted with Google; notification emails; tests.</td></tr>
+      <tr><td><b>Login and signup pages</b></td><td>The button, the "Finish setting up your shop" step, clear messages for each outcome, "Accept with Google" on invites.</td></tr>
+      <tr><td><b>Dashboard → Profile</b></td><td>"Signed in with Google", set a password, remove Google sign-in (only once a password exists).</td></tr>
+      <tr><td><b>Infra</b></td><td>The browser rules on the dashboard allow Google's sign-in script and pop-up; the client ID reaches the backend and the build.</td></tr>
+      <tr><td><b>Unchanged</b></td><td>Password login, forgot password, email verification, the business switcher, shoppers' emailed-code login.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="safety">
+  <div class="sec-head"><h2>Safety</h2></div>
+  <div class="grid g2">
+    <div class="card"><h3>What Google shares</h3><ul><li>Only name, email and profile photo (<code>openid email profile</code>).</li><li>No access to Gmail, Drive or contacts, and nothing posted anywhere.</li><li>No Google password ever reaches StoreEase.</li></ul></div>
+    <div class="card"><h3>What StoreEase checks</h3><ul><li>The token is signed by Google, issued for StoreEase, still valid, and the email is verified.</li><li>Linking an existing account sends an email, and removing Google needs a password first, so nobody gets locked out.</li><li>The same rate limits as password login.</li></ul></div>
+  </div>
+</section>
+
+<section id="decisions">
+  <div class="sec-head"><h2>Decisions</h2><p>Recommended rows are waiting for the owner's confirmation.</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Topic</th><th>Proposal</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td><b>Who</b></td><td>Owners and staff, at <code>dashboard.storeease.in</code></td><td><span class="chip c-warn">recommended</span></td></tr>
+      <tr><td><b>Shoppers</b></td><td>Not now: shops live on many addresses, including custom domains, and Google needs each one registered. Their emailed code stays. A separate plan later.</td><td><span class="chip c-warn">recommended</span></td></tr>
+      <tr><td><b>Existing accounts</b></td><td>Link automatically when the Google email matches, with a notification email</td><td><span class="chip c-warn">recommended</span></td></tr>
+      <tr><td><b>Mobile number</b></td><td>Still asked at signup; Google doesn't provide one</td><td><span class="chip c-warn">recommended</span></td></tr>
+      <tr><td><b>Method</b></td><td>Google's "Sign in with Google" button with a pop-up; StoreEase verifies the signed token</td><td><span class="chip c-ok">decided</span></td></tr>
+      <tr><td><b>Passwords</b></td><td>Google-only accounts can add a password later in Profile</td><td><span class="chip c-ok">decided</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="rollout">
+  <div class="sec-head"><h2>Rollout</h2></div>
+  <div class="flow">
+    <div class="step w"><b>Owner</b><span>confirm decisions; Google Cloud client; privacy + terms pages</span></div><span class="arr">→</span>
+    <div class="step"><b>Backend PR</b><span>accounts, sign-in check, tests</span></div><span class="arr">→</span>
+    <div class="step"><b>Infra PR</b><span>browser rules, client ID</span></div><span class="arr">→</span>
+    <div class="step"><b>Frontend PR</b><span>button, finish-signup step, profile</span></div><span class="arr">→</span>
+    <div class="step g"><b>Live</b><span>tested with a real Google account in all four cases</span></div>
+  </div>
+  <div class="callout warn" style="margin-top:14px"><b>Before Google approves the consent screen</b>storeease.in needs a privacy policy and terms page. Today it has neither.</div>
+  <nav class="pager" aria-label="Next and previous page"><a href="template-platform.html">← Template platform</a><a href="architecture.html">Architecture →</a></nav>
+  <footer class="foot">Planned, not built yet. Source of truth for building it: the team's context repo (<code>plans/google-login.md</code>).</footer>
+</section>
+</main>
+
+</div>
+<style>
+.gs h5{margin:0;font-family:var(--font-display);font-size:1.25rem;color:#1d2433}
+.gs p{margin:0;color:#5b6478;font-size:.88rem}
+.gs .in{border:1px solid #d5d9e4;border-radius:10px;padding:8px 10px;font-size:.88rem;color:#8a92a6;background:#fafbfd}
+.gs .in.on{color:#1d2433;background:#fff}
+.gs .gbtn{font:inherit;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #c9cdd8;border-radius:999px;padding:9px 14px;background:#fff;color:#1d2433;font-weight:700;cursor:pointer}
+.gs .gbtn:hover{background:#f4f6fa}
+.gs .g{width:18px;height:18px;border-radius:50%;background:conic-gradient(#ea4335 0 25%,#fbbc05 0 50%,#34a853 0 75%,#4285f4 0)}
+.gs .or{text-align:center;font-size:.78rem;color:#8a92a6}
+.gs .acct{display:flex;gap:10px;align-items:center;border:1px solid #d5d9e4;border-radius:12px;padding:10px;cursor:pointer;background:#fff;font:inherit;text-align:left;color:#1d2433}
+.gs .av{width:32px;height:32px;border-radius:50%;background:#4285f4;color:#fff;display:grid;place-items:center;font-weight:800;flex:none}
+.gs .ok{background:#e8f6ed;color:#147a3a;border-radius:10px;padding:10px;font-size:.86rem}
+.gs .info{background:#e6edff;color:#1d4ed8;border-radius:10px;padding:10px;font-size:.86rem}
+.gs .go{font:inherit;border:0;border-radius:999px;padding:9px 14px;background:#28bc5e;color:#000c3f;font-weight:800;cursor:pointer}
+.gs .dash{border:1px solid #e6e8ef;border-radius:12px;padding:12px;display:grid;gap:6px;font-size:.86rem;color:#1d2433}
+</style>
+<script>
+(function () {
+  const acc = {
+    linked: { email: 'ravi@gmail.com', name: 'Ravi Kumar', hint: 'This Google account was linked earlier, so it simply logs Ravi in.' },
+    match: { email: 'priya.pickles@gmail.com', name: 'Priya Shah', hint: 'Priya signed up with a password using this email. Google is linked to that account; nothing is duplicated.' },
+    'new': { email: 'asha.bakes@gmail.com', name: 'Asha Menon', hint: 'A new email: one short step creates the shop. No 6-digit email code, because Google already verified the address.' },
+    invite: { email: 'neha@gmail.com', name: 'Neha Rao', hint: 'Neha was invited as staff to Priya\'s Pickles. Her Google email matches the invite, so she joins without making a password.' }
+  };
+  const scr = document.getElementById('glScreen'), hint = document.getElementById('glHint');
+  const cur = () => document.querySelector('input[name=glacc]:checked').value;
+  const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  function gbtn(label) { return '<button type="button" class="gbtn" data-act="google"><span class="g" aria-hidden="true"></span>' + label + '</button>'; }
+  function start() {
+    const k = cur(); hint.textContent = acc[k].hint; scr.className = 'shop gs';
+    if (k === 'invite') {
+      scr.innerHTML = '<h5>Join Priya\'s Pickles</h5><p>Priya invited <b>neha@gmail.com</b> to help run the shop (role: Orders).</p>' + gbtn('Accept with Google') + '<div class="or">or set a password</div><div class="in">New password</div>';
+    } else if (k === 'new') {
+      scr.innerHTML = '<h5>Start your shop</h5><p>Free for 14 days. No card needed.</p>' + gbtn('Continue with Google') + '<div class="or">or sign up with email</div><div class="in">Email</div><div class="in">Password</div>';
+    } else {
+      scr.innerHTML = '<h5>Log in to StoreEase</h5>' + gbtn('Continue with Google') + '<div class="or">or with your password</div><div class="in">Email</div><div class="in">Password</div>';
+    }
+  }
+  function chooser() {
+    const a = acc[cur()];
+    scr.innerHTML = '<p style="font-weight:700;color:#1d2433">Choose an account</p><p>to continue to StoreEase</p><button type="button" class="acct" data-act="picked"><span class="av">' + esc(a.name[0]) + '</span><span><b>' + esc(a.name) + '</b><br><span style="font-size:.82rem;color:#5b6478">' + esc(a.email) + '</span></span></button><p style="font-size:.76rem">Google will share your name, email address and profile picture with StoreEase.</p>';
+  }
+  function result() {
+    const k = cur(), a = acc[k];
+    if (k === 'linked') {
+      scr.innerHTML = '<div class="ok">Welcome back, Ravi.</div>' + dash('Ravi\'s Chai Corner');
+    } else if (k === 'match') {
+      scr.innerHTML = '<div class="info">Google sign-in was added to your account. We emailed ' + esc(a.email) + ' to let you know.</div>' + dash('Priya\'s Pickles');
+    } else if (k === 'invite') {
+      scr.innerHTML = '<div class="ok">You\'ve joined Priya\'s Pickles. Next time, just tap Continue with Google.</div>' + dash('Priya\'s Pickles');
+    } else {
+      scr.innerHTML = '<h5>Finish setting up your shop</h5><div class="in on">Asha Menon</div><div class="in">asha.bakes@gmail.com · verified by Google</div><div class="in on">Asha\'s Bakes</div><div class="in on">asha-bakes.storeease.in</div><div class="in on">98450 12345</div><button type="button" class="go" data-act="create">Create my shop</button>';
+    }
+  }
+  function dash(shop) { return '<div class="dash"><b>' + esc(shop) + '</b><span>Dashboard · Home</span><span style="color:#5b6478">Orders, products, settings…</span></div>'; }
+  scr.addEventListener('click', e => {
+    const t = e.target.closest('[data-act]'); if (!t) return;
+    if (t.dataset.act === 'google') chooser();
+    else if (t.dataset.act === 'picked') result();
+    else if (t.dataset.act === 'create') scr.innerHTML = '<div class="ok">Shop created: asha-bakes.storeease.in. Email already verified, so the checklist starts at adding products.</div>' + dash('Asha\'s Bakes');
+  });
+  document.getElementById('glAcc').addEventListener('change', start);
+  document.getElementById('glReset').addEventListener('click', start);
+  start();
+})();
+</script>
+
+</body>
+</html>
