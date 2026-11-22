@@ -8,6 +8,7 @@ open `index.html` in a browser, no build step or server needed (fonts load from 
 | `index.html` | What StoreEase is, who uses it, the four repos, where things stand |
 | `product.html` | A store's life, order statuses, features for owners, shoppers and the team |
 | `pricing.html` | Plans, add-ons, trial / grace / suspension timeline, instant vs Razorpay mode |
+| `template-platform.html` | **Planned:** the template platform: owner editor, frozen versions, Private templates, plans, the developer skill, build plan (source of truth: the private `storeease-context` repo, `plans/template-platform.md`) |
 | `architecture.html` | The five websites, the AWS diagram, why every app calls `/api` on its own host |
 | `tenancy.html` | How stores are kept apart (RLS), DB roles, logins, the login hand-over, staff roles |
 | `apps.html` | Frontend apps and packages, templates, brand and design rules |
