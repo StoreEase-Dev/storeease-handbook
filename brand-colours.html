@@ -145,6 +145,12 @@
 .fixdemo .b{border-radius:999px;padding:8px 18px;font-weight:800}
 details.dev{margin-top:14px;border:2px dashed var(--line);border-radius:14px;padding:10px 14px}
 details.dev summary{font-weight:800;cursor:pointer;color:var(--muted)}
+/* recipe builder */
+.rb{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.rb label{display:grid;gap:4px;font-size:.8rem;font-weight:800;color:var(--muted)}
+.rb label span{font-weight:600;font-size:.76rem}
+.rb select,.rb input{font:inherit;font-weight:700;color:var(--fg);background:var(--paper);border:2px solid var(--line);border-radius:10px;padding:6px 8px;min-width:0}
+.rbres{display:flex;gap:4px;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -314,22 +320,48 @@ details.dev summary{font-weight:800;cursor:pointer;color:var(--muted)}
     <p>Clean Store's three recipes, all filled with Priya's red. These are the cards an owner would see.</p>
     <div class="trio" id="trioRecipes"></div>
   </div>
-  <details class="dev"><summary>For developers: how a recipe is written in <code>template.json</code></summary>
-    <pre style="margin-top:10px"><code>"colours": {
-  "recipes": [
-    { "id": "clean", "name": "Clean white",
-      "bg": "neutral 99", "surface": "neutral 96",
-      "text": "neutral 20", "accent": "brand", "head": "bg" },
-    { "id": "tint", "name": "Soft brand tint",
-      "bg": "brand 97 soft", "surface": "brand 93 soft",
-      "text": "brand 22 soft", "accent": "brand", "head": "brand 92 soft" },
-    { "id": "bold", "name": "Bold header",
-      "bg": "neutral 99", "accent": "brand", "head": "accent" }
-  ],
-  "default": "clean"
-}</code></pre>
-    <p class="hint" style="margin-top:8px"><b>brand</b> = the brand colour, nudged only as far as readability needs · <b>brand 97 soft</b> = the same hue at lightness 97/100 with little colour (a tint) · <b>neutral</b> = a grey with a faint hint of the brand hue · <b>head: accent</b> = header in the brand colour. The <code>/parameterize-template</code> skill proposes recipes from the design.</p>
-  </details>
+</section>
+
+<section id="make-recipe">
+  <div class="sec-head"><h2>How a template developer makes a recipe</h2><p>No colour theory needed. Making a recipe means answering one question for each of the five jobs: <b>"should this follow the shop's brand, or stay calm and neutral?"</b> The answer is chosen from a short menu, not typed as a colour code.</p></div>
+  <div class="howsteps">
+    <div class="hs"><span class="stepno">1</span><div><h3>Design the template as usual</h3><p>The developer builds the template in whatever colours look good, say a white page with red buttons, exactly as today.</p></div></div>
+    <div class="hs"><span class="stepno">2</span><div><h3>Turn each colour into a menu choice</h3><p>For each job they pick what the colour <i>means</i>. The red button means "the shop's brand colour", so they choose <b>Brand colour</b>. The white page should stay white for every shop, so they choose <b>White</b>. Text is normally left on <b>Automatic</b>: StoreEase uses near-black on light colours and near-white on dark ones, so it is always readable.</p></div></div>
+    <div class="hs"><span class="stepno">3</span><div><h3>Check it with other shops' logos</h3><p>The developer previews the recipe with very different brand colours (red, navy, yellow, pink). If one of them doesn't work, StoreEase shows ✗ and they pick a different menu option.</p></div></div>
+    <div class="hs"><span class="stepno">4</span><div><h3>Make 2–4 recipes and save them</h3><p>Usually a light one, a soft tinted one and a bolder one (or dark ones for a dark template). They're saved in the template's settings file. In practice the <code>/parameterize-template</code> skill does steps 2–4 for them: it reads the design, proposes the recipes and checks them, and the developer only adjusts.</p></div></div>
+  </div>
+
+  <div class="lab" style="margin-top:16px">
+    <div class="lab-step">
+      <div class="h"><span class="stepno">✎</span><h3>Try it: the recipe builder</h3></div>
+      <p class="hint">Start from one of the four example recipes, or change any menu yourself. The three shops below use your recipe with their own brand colours.</p>
+      <div class="row" id="rbPresets" role="group" aria-label="Example recipes"></div>
+      <div class="rb" id="rbForm"></div>
+    </div>
+    <div class="lab-step">
+      <div class="h"><span class="stepno">👀</span><h3>Your recipe on three different shops</h3></div>
+      <div class="trio" id="rbShops"></div>
+    </div>
+    <div class="lab-step">
+      <div class="h"><span class="stepno">💾</span><h3>What gets saved in the template</h3></div>
+      <p class="hint">This is all a recipe is: a name and one menu choice per job. It goes into the template's <code>template.json</code>.</p>
+      <pre id="rbJson"></pre>
+    </div>
+  </div>
+
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h3>Rules of thumb for developers</h3><ul>
+      <li><b>One strong colour per recipe.</b> Usually the button is the brand colour; page and cards stay calm (white, light grey or a very light tint).</li>
+      <li><b>Leave text on Automatic</b> unless the design really needs dark brand-coloured text.</li>
+      <li><b>A brand-coloured header</b> looks bold, but some logos fade into it. Offer it as one option, not the only one.</li>
+      <li><b>At least one light recipe</b>, unless the template is designed dark only.</li>
+    </ul></div>
+    <div class="card"><h3>What the developer never does</h3><ul>
+      <li>Type colour codes for the shop. The shop's colour always comes from its logo or its owner.</li>
+      <li>Check contrast numbers by hand. StoreEase checks every combination and shows ✓ or ✗.</li>
+      <li>Worry about one shop's logo. The 12-colour check before approval (below) tests the recipe against every kind of brand colour.</li>
+    </ul></div>
+  </div>
 </section>
 
 <section id="how">
@@ -790,7 +822,76 @@ details.dev summary{font-weight:800;cursor:pointer;color:var(--muted)}
     });
   }
 
-  renderTpl(); advState(); setLogo(LOGOS[0]); renderExplainers();
+  // ---------- recipe builder ----------
+  const MENU = {
+    page:   { label: 'Page', help: 'the background', opts: { white: 'White', offwhite: 'Off-white', 'brand-tint': 'Very light brand tint', 'dark-brand': 'Very dark brand', 'near-black': 'Near-black' } },
+    cards:  { label: 'Cards', help: 'boxes around products', opts: { white: 'White', 'light-grey': 'Light grey', 'brand-tint': 'Light brand tint', 'dark-grey': 'Dark grey', 'dark-brand': 'Dark brand' } },
+    text:   { label: 'Text', help: 'headings, names, prices', opts: { auto: 'Automatic (recommended)', 'dark-brand': 'Dark brand colour' } },
+    button: { label: 'Button', help: 'what shoppers tap', opts: { brand: 'Brand colour', 'dark-brand': 'Dark brand colour', 'near-black': 'Near-black' } },
+    header: { label: 'Header', help: 'the bar behind the logo', opts: { page: 'Same as the page', brand: 'Brand colour', 'brand-tint': 'Light brand tint', 'near-black': 'Near-black' } },
+  };
+  const PRESETS = {
+    'Clean white': { page: 'white', cards: 'light-grey', text: 'auto', button: 'brand', header: 'page' },
+    'Soft brand tint': { page: 'brand-tint', cards: 'brand-tint', text: 'dark-brand', button: 'brand', header: 'brand-tint' },
+    'Bold header': { page: 'white', cards: 'light-grey', text: 'auto', button: 'brand', header: 'brand' },
+    'Dark with brand accent': { page: 'dark-brand', cards: 'dark-brand', text: 'auto', button: 'brand', header: 'near-black' },
+  };
+  const RB = { name: 'Clean white', ch: { ...PRESETS['Clean white'] } };
+  function shade(key, s, role) {
+    const t = (L, c) => lch(L, Math.min(s.C, c), s.h), n = (L) => lch(L, 0.006, s.h);
+    switch (key) {
+      case 'white': return n(0.995);
+      case 'offwhite': return n(0.975);
+      case 'light-grey': return n(0.955);
+      case 'brand-tint': return role === 'cards' ? t(0.935, 0.045) : role === 'header' ? t(0.92, 0.05) : t(0.975, 0.025);
+      case 'dark-brand': return role === 'cards' ? t(0.26, 0.04) : role === 'text' ? t(0.25, 0.07) : role === 'button' ? t(0.32, 0.12) : t(0.19, 0.03);
+      case 'dark-grey': return n(0.27);
+      case 'near-black': return n(0.17);
+    }
+    return n(0.99);
+  }
+  function buildRecipe(seedHex, ch) {
+    const s = { ...toLch(seedHex), hex: seedHex };
+    const bg = shade(ch.page, s, 'page'), surface = shade(ch.cards, s, 'cards');
+    const dark = lum(bg) < 0.2;
+    const autoText = dark ? lch(0.96, 0.01, s.h) : lch(0.22, 0.02, s.h);
+    const text = ch.text === 'auto' ? autoText : shade('dark-brand', s, 'text');
+    const muted = lum(surface) < 0.2 ? lch(0.78, 0.02, s.h) : lch(0.45, 0.02, s.h);
+    let acc, on, drift = 0, ok = true;
+    if (ch.button === 'brand') { const f = fitAccent(seedHex, bg); acc = f.acc; on = f.on; drift = f.drift; ok = f.ok; }
+    else { acc = ch.button === 'near-black' ? lch(dark ? 0.9 : 0.17, 0.006, s.h) : shade('dark-brand', s, 'button'); on = contrast(acc, '#ffffff') >= contrast(acc, '#141414') ? '#ffffff' : '#141414'; }
+    let head = ch.header === 'page' ? bg : ch.header === 'brand' ? acc : shade(ch.header, s, 'header');
+    const headtext = contrast(head, '#ffffff') >= contrast(head, '#141414') ? '#ffffff' : lch(0.22, 0.02, s.h);
+    const c = { bg, surface, text, muted, border: dark ? lch(0.33, 0.03, s.h) : lch(0.9, 0.01, s.h), head, headtext, img: lum(surface) < 0.2 ? lch(0.35, Math.min(s.C, 0.06), s.h) : lch(0.88, Math.min(s.C, 0.06), s.h), acc, onacc: on };
+    const fails = [];
+    if (contrast(text, bg) < 4.5) fails.push('text on the page');
+    if (contrast(text, surface) < 4.5) fails.push('text on the cards');
+    if (contrast(muted, surface) < 4.5) fails.push('prices on the cards');
+    if (!ok || contrast(on, acc) < 4.5) fails.push('button text');
+    if (contrast(acc, bg) < 3) fails.push('button vs page');
+    return { c, fails, drift };
+  }
+  function renderBuilder() {
+    $('rbPresets').innerHTML = Object.keys(PRESETS).map((n) => `<button type="button" class="btn${RB.name === n ? ' go' : ''}" data-n="${esc(n)}">${esc(n)}</button>`).join('');
+    $('rbForm').innerHTML = `<label>Recipe name<input id="rbName" value="${esc(RB.name)}" maxlength="30"><span>what owners see on the card</span></label>` + Object.entries(MENU).map(([job, m]) => `<label>${m.label}<select data-job="${job}">${Object.entries(m.opts).map(([k, v]) => `<option value="${k}"${RB.ch[job] === k ? ' selected' : ''}>${v}</option>`).join('')}</select><span>${m.help}</span></label>`).join('');
+    renderBuilderOut();
+  }
+  function renderBuilderOut() {
+    const shops = [[LOGOS[0], '#c62828'], [LOGOS[2], '#1a237e'], [LOGOS[1], '#f5b700']];
+    $('rbShops').innerHTML = shops.map(([L, h]) => {
+      const r = buildRecipe(h, RB.ch);
+      const verdict = r.fails.length ? `<span class="bdg bad">✗ hard to read: ${esc(r.fails.join(', '))}</span>` : `<span class="bdg ok">✓ readable</span>`;
+      const moved = !r.fails.length && dist(r.c.acc, h) > 0.03 && RB.ch.button === 'brand' ? `<span class="bdg wa">button shade adjusted: ${r.c.acc}</span>` : '';
+      return `<figure>${shopHtml(r.c, true, L, 'clean')}<figcaption><b>${esc(L.name)}</b> · brand ${h}<div class="rbres">${verdict}${moved}</div></figcaption></figure>`;
+    }).join('');
+    const id = (RB.name || 'my-recipe').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'my-recipe';
+    $('rbJson').textContent = JSON.stringify({ id, name: RB.name || 'My recipe', ...RB.ch }, null, 2);
+  }
+  $('rbPresets').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; RB.name = b.dataset.n; RB.ch = { ...PRESETS[b.dataset.n] }; renderBuilder(); });
+  $('rbForm').addEventListener('change', (e) => { const sel = e.target.closest('select'); if (!sel) return; RB.ch[sel.dataset.job] = sel.value; if (PRESETS[RB.name] && JSON.stringify(PRESETS[RB.name]) !== JSON.stringify(RB.ch)) { RB.name = 'My recipe'; $('rbName').value = RB.name; $('rbPresets').querySelectorAll('.btn').forEach((x) => x.classList.remove('go')); } renderBuilderOut(); });
+  $('rbForm').addEventListener('input', (e) => { if (e.target.id === 'rbName') { RB.name = e.target.value; renderBuilderOut(); } });
+
+  renderTpl(); advState(); setLogo(LOGOS[0]); renderExplainers(); renderBuilder();
 })();
 </script>
 </body>
