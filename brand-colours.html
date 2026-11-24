@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brand colours · StoreEase Handbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@700&display=swap">
+<link rel="stylesheet" href="assets/handbook.css">
+<style>
+/* Brand colours page: the colour-scheme demo on top of the handbook look. */
+.btn{font:inherit;font-weight:800;font-size:.9rem;border:2px solid var(--fg);background:var(--paper);color:var(--fg);padding:7px 16px;border-radius:999px;cursor:pointer;box-shadow:3px 3px 0 var(--shadow)}
+.btn:hover{transform:translate(-1px,-1px)}
+.btn:active{transform:translate(2px,2px);box-shadow:none}
+.btn.go{background:var(--green);color:var(--ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hint{font-size:.85rem;color:var(--muted)}
+.seg{display:inline-flex;gap:4px;padding:4px;border:2px solid var(--fg);border-radius:999px;background:var(--paper);flex-wrap:wrap}
+.seg button{font:inherit;font-weight:800;font-size:.86rem;border:0;background:none;color:var(--fg);padding:6px 14px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--green);color:var(--ink)}
+.seg button:hover:not([aria-pressed="true"]){background:var(--tint)}
+
+/* the demo frame */
+.lab{background:var(--paper);border:2px solid var(--fg);border-radius:20px;padding:16px;box-shadow:5px 5px 0 var(--shadow);display:grid;gap:18px}
+.lab h3{font-size:1.05rem}
+.stepno{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--green);color:var(--ink);font-weight:800;font-size:.85rem;margin-right:8px;flex:none}
+.lab-step{display:grid;gap:10px;padding-top:14px;border-top:2px dashed var(--line)}
+.lab-step:first-child{border-top:0;padding-top:0}
+.lab-step > .h{display:flex;align-items:center;flex-wrap:wrap;gap:4px 0}
+.logos{display:flex;gap:10px;flex-wrap:wrap}
+.logo-pick{font:inherit;border:2px solid var(--line);background:#fff;border-radius:14px;padding:6px;cursor:pointer;width:84px;height:84px;display:grid;place-items:center}
+.logo-pick img{max-width:100%;max-height:100%}
+.logo-pick[aria-pressed="true"]{border-color:var(--green-text);outline:3px solid var(--green);outline-offset:1px}
+.logo-pick.up{background:var(--bg);color:var(--fg);font-weight:800;font-size:.78rem;text-align:center;border-style:dashed;line-height:1.25}
+.extract{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.extract .lg{width:72px;height:72px;border-radius:14px;background:#fff;border:2px solid var(--line);display:grid;place-items:center;padding:6px;flex:none}
+.extract .lg img{max-width:100%;max-height:100%}
+.pal{display:flex;gap:8px;flex-wrap:wrap}
+.pal .c{display:grid;gap:2px;justify-items:center;font-size:.72rem;font-weight:750;color:var(--muted);font-family:var(--mono)}
+.pal .c i{width:44px;height:44px;border-radius:12px;border:2px solid var(--line);display:block}
+.pal .c.seed i{outline:3px solid var(--green);outline-offset:2px}
+
+/* suggestion cards */
+.sugs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.sug{font:inherit;text-align:left;color:var(--fg);background:var(--bg);border:2px solid var(--line);border-radius:16px;padding:8px;cursor:pointer;display:grid;gap:8px;min-width:0}
+.sug:hover{border-color:var(--fg)}
+.sug[aria-pressed="true"]{border-color:var(--green-text);outline:3px solid var(--green);outline-offset:1px;background:var(--tint)}
+.sug .meta{display:grid;gap:4px;padding:0 4px 4px}
+.sug .meta b{font-size:.9rem}
+.sug .sw5{display:flex;gap:3px}
+.sug .sw5 i{flex:1;height:10px;border-radius:4px;border:1px solid rgb(0 0 0 / .12)}
+.badges{display:flex;gap:4px;flex-wrap:wrap}
+.bdg{font-size:.7rem;font-weight:800;padding:1px 8px;border-radius:999px;background:var(--chip);color:var(--muted)}
+.bdg.ok{background:var(--tint);color:var(--green-text)}
+.bdg.wa{background:var(--warn-tint);color:var(--warn)}
+.bdg.bad{background:var(--danger-tint);color:var(--danger)}
+
+/* the shop mock; all of its colours come from the scheme's CSS variables */
+.shopv{--r:14px;background:var(--s-bg);color:var(--s-text);border-radius:12px;overflow:hidden;border:1px solid rgb(0 0 0 / .14);font-family:var(--font-body);min-width:0}
+.shopv .hd{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--s-head);color:var(--s-headtext);border-bottom:1px solid var(--s-border)}
+.shopv .hd img{height:30px;width:auto;max-width:90px;flex:none}
+.shopv .hd b{font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shopv .hd span{margin-left:auto;font-size:.78rem;opacity:.85;white-space:nowrap}
+.shopv .hero{padding:18px 14px;display:grid;gap:8px}
+.shopv .hero h4{margin:0;font-family:var(--s-font);font-size:1.35rem;line-height:1.15;color:var(--s-text)}
+.shopv .hero p{font-size:.86rem;color:var(--s-muted)}
+.shopv .cta{justify-self:start;background:var(--s-acc);color:var(--s-onacc);border-radius:var(--r);padding:7px 16px;font-weight:800;font-size:.85rem}
+.shopv .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:0 14px 14px}
+.shopv .p{background:var(--s-surface);border:1px solid var(--s-border);border-radius:calc(var(--r) - 4px);overflow:hidden;font-size:.76rem}
+.shopv .p i{display:block;height:46px;background:var(--s-img)}
+.shopv .p div{padding:6px 8px;display:grid}
+.shopv .p b{color:var(--s-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shopv .p span{color:var(--s-muted)}
+.shopv .ft{padding:8px 14px;font-size:.72rem;color:var(--s-muted);border-top:1px solid var(--s-border)}
+.shopv.mini .hero{padding:10px}
+.shopv.mini .hero h4{font-size:.95rem}
+.shopv.mini .hero p,.shopv.mini .ft{display:none}
+.shopv.mini .hd{padding:7px 10px}
+.shopv.mini .hd img{height:20px}
+.shopv.mini .hd b{font-size:.78rem}
+.shopv.mini .hd span{display:none}
+.shopv.mini .cta{padding:4px 10px;font-size:.72rem}
+.shopv.mini .grid3{padding:0 10px 10px;gap:5px}
+.shopv.mini .p i{height:26px}
+.shopv.mini .p div{display:none}
+
+.big{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:16px;align-items:start}
+@media (max-width:860px){.big{grid-template-columns:1fr}}
+.checks{display:grid;gap:8px;font-size:.88rem}
+.checks div{display:grid;grid-template-columns:22px minmax(0,1fr);gap:6px}
+.checks .k{font-weight:800}
+.roles{display:grid;gap:4px;font-size:.8rem}
+.roles div{display:grid;grid-template-columns:18px 1fr auto;gap:8px;align-items:center}
+.roles i{width:18px;height:18px;border-radius:5px;border:1px solid rgb(0 0 0 / .15)}
+.roles code{font-size:.74rem}
+
+.own{display:grid;gap:10px;background:var(--bg);border:2px solid var(--line);border-radius:16px;padding:12px}
+.own input[type=color]{width:46px;height:40px;border:2px solid var(--line);border-radius:10px;padding:2px;background:var(--paper);cursor:pointer}
+.own input[type=text]{font:inherit;font-family:var(--mono);width:110px;border:2px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--paper);color:var(--fg)}
+.chipbtn{font:inherit;font-size:.78rem;font-weight:800;border:2px solid var(--line);border-radius:999px;padding:3px 10px 3px 4px;background:var(--paper);color:var(--fg);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chipbtn i{width:18px;height:18px;border-radius:50%;border:1px solid rgb(0 0 0 / .15)}
+.adv summary{font-weight:800;cursor:pointer}
+.adv .row{margin-top:8px}
+
+/* approval strip */
+.strip{display:grid;gap:8px;overflow-x:auto;padding-bottom:4px}
+.strip .r{display:grid;grid-template-columns:150px repeat(12,minmax(54px,1fr));gap:6px;align-items:center;min-width:860px}
+.strip .r > b{font-size:.84rem}
+.tile{border-radius:10px;overflow:hidden;border:1px solid rgb(0 0 0 / .15);height:54px;display:grid;grid-template-rows:16px 1fr;position:relative}
+.tile .th{background:var(--s-head)}
+.tile .tb{background:var(--s-bg);display:grid;place-items:center}
+.tile .tb span{background:var(--s-acc);color:var(--s-onacc);font-size:.62rem;font-weight:800;border-radius:6px;padding:1px 6px}
+.tile em{position:absolute;top:1px;right:3px;font-style:normal;font-size:.7rem;font-weight:800}
+.strip .hues{font-size:.7rem;color:var(--muted);text-align:center;font-weight:700}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.84rem;color:var(--muted)}
+.term{background:#0b1233;color:#d7f5e1;border-radius:14px;padding:12px 14px;font-family:var(--mono);font-size:.82rem;line-height:1.6;overflow-x:auto;white-space:pre}
+.term .dim{color:#8f9bc6}.term .ok{color:#5fd37f}
+</style>
+</head>
+<body>
+<div class="frame">
+<aside class="side">
+<a class="brand" href="index.html"><b>St<i></i>reEase</b><span>Handbook</span></a>
+<nav class="nav" aria-label="Handbook pages">
+<div class="grp">Start</div>
+<a href="index.html">Start here</a>
+<div class="grp">The business</div>
+<a href="product.html">The product</a>
+<a href="pricing.html">Plans & billing</a>
+<a href="template-platform.html">Template platform</a>
+<a href="brand-colours.html" aria-current="page">Brand colours</a>
+<a href="google-login.html">Google login</a>
+<div class="grp">How it is built</div>
+<a href="architecture.html">Architecture</a>
+<a href="tenancy.html">Keeping stores apart</a>
+<a href="apps.html">The apps</a>
+<a href="backend.html">API & data</a>
+<div class="grp">Running it</div>
+<a href="deploy.html">Deploy & operate</a>
+<a href="local.html">Run it locally</a>
+<div class="grp">Reference</div>
+<a href="decisions.html">Decisions & open items</a>
+<a href="glossary.html">Glossary</a>
+</nav>
+</aside>
+<main>
+
+<header class="top" id="top">
+  <span class="eyebrow">Proposal · 24 Nov 2026 · for review</span>
+  <h1>Every template in <span class="hl">the shop's own colours</span>.</h1>
+  <p class="lead">Part of the <a href="template-platform.html">template platform</a>. Owners shouldn't need a designer's eye. They pick <b>one brand colour</b>, or just upload their logo, and StoreEase offers a few colour schemes that the template's designer has already shaped and that we have checked for readability.</p>
+  <p class="script" style="margin-top:14px">your logo picks the paint</p>
+  <div class="grid g3" style="margin-top:24px">
+    <div class="stat"><b>1 colour</b><span>is all the owner has to choose; the rest is worked out</span></div>
+    <div class="stat"><b>4–6</b><span>ready schemes suggested from the logo, for each template</span></div>
+    <div class="stat"><b>0</b><span>published shops with text shoppers can't read</span></div>
+  </div>
+</header>
+
+<section id="problem">
+  <div class="sec-head"><h2>Why "a colour picker for each colour" fails</h2><p>Giving each colour in a template its own parameter (background, button, headings and so on) looks flexible, but it hands design work to people who didn't sign up for it.</p></div>
+  <div class="grid g3">
+    <div class="card"><h3>Too many choices</h3><p>Five independent colours can be combined in endless ways, and almost all of them clash. Most owners will leave the defaults, which then don't match their logo, or pick colours that fight each other.</p></div>
+    <div class="card"><h3>Unreadable shops</h3><p>Light yellow text on white or a dark logo on a dark header are easy mistakes to make. Shoppers can't read prices or find the button, and the shop loses orders without knowing why.</p></div>
+    <div class="card"><h3>Templates lose their design</h3><p>A template's designer made deliberate choices, such as a calm background or one strong button colour. Free colour fields can undo all of them, so a "premium" template no longer looks premium.</p></div>
+  </div>
+</section>
+
+<section id="idea">
+  <div class="sec-head"><h2>The idea in one line</h2><p>The <b>template</b> decides <i>where</i> colour goes, the <b>owner's brand</b> decides <i>which</i> colour, and <b>StoreEase</b> makes sure the result is readable.</p></div>
+  <div class="flow">
+    <div class="step"><b>Logo</b><span>uploaded once in Store settings</span></div><span class="arr">→</span>
+    <div class="step"><b>Brand colours</b><span>2–4 main colours pulled from the logo</span></div><span class="arr">→</span>
+    <div class="step"><b>Template recipes</b><span>the designer's 2–4 looks, filled with each colour</span></div><span class="arr">→</span>
+    <div class="step"><b>Checked and ranked</b><span>readable text, visible logo, true to the brand</span></div><span class="arr">→</span>
+    <div class="step g"><b>Owner taps one</b><span>or picks their own colour, with guardrails</span></div>
+  </div>
+</section>
+
+<section id="try">
+  <div class="sec-head"><h2>Try it</h2><p>Pick a sample logo or upload your own (it stays in your browser; nothing is uploaded). Then choose a template and watch the suggestions change. This demo uses a simplified version of the colour maths; the real build uses Google's open-source colour library (see <a href="#how">How it works</a>).</p></div>
+  <div class="lab">
+    <div class="lab-step">
+      <div class="h"><span class="stepno">1</span><h3>The shop's logo</h3></div>
+      <div class="logos" id="logos" role="group" aria-label="Sample logos"></div>
+      <input type="file" id="upload" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden>
+      <div class="extract" aria-live="polite">
+        <div class="lg"><img id="logoImg" alt="Selected logo"></div>
+        <div style="display:grid;gap:6px;min-width:0">
+          <b style="font-size:.9rem">Colours found in the logo</b>
+          <div class="pal" id="logoPal"></div>
+          <p class="hint" id="palNote"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="h"><span class="stepno">2</span><h3>The template</h3></div>
+      <div class="seg" id="tplSeg" role="group" aria-label="Template"></div>
+      <p class="hint" id="tplNote"></p>
+    </div>
+
+    <div class="lab-step">
+      <div class="h"><span class="stepno">3</span><h3>Suggested schemes</h3></div>
+      <p class="hint">Each card is one of the template's recipes filled with one of the logo's colours. Anything with unreadable text has already been removed. The best matches come first.</p>
+      <div class="sugs" id="sugs"></div>
+    </div>
+
+    <div class="lab-step">
+      <div class="h"><span class="stepno">4</span><h3>Preview and checks</h3></div>
+      <div class="big">
+        <div id="bigPreview"></div>
+        <div style="display:grid;gap:14px">
+          <div class="checks" id="checks" aria-live="polite"></div>
+          <div class="roles" id="roles"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="h"><span class="stepno">5</span><h3>Or choose your own colour</h3></div>
+      <div class="own">
+        <div class="row">
+          <input type="color" id="ownColour" value="#7c3aed" aria-label="Brand colour">
+          <input type="text" id="ownHex" value="#7c3aed" aria-label="Brand colour as hex" maxlength="7">
+          <button type="button" class="btn go" id="ownApply">Use this colour</button>
+        </div>
+        <div class="row" id="ownChips"><span class="hint">From your logo:</span></div>
+        <p class="hint">Only the brand colour is picked. The template's recipes build the background, text and buttons around it, so even an unusual colour gives a readable shop.</p>
+        <details class="adv">
+          <summary>Advanced: set the button colour exactly</summary>
+          <p class="hint" style="margin-top:6px">For owners whose brand guide fixes an exact colour. The badge shows whether the button text is readable on it; <b>Fix it</b> finds the nearest readable shade.</p>
+          <div class="row">
+            <input type="color" id="advColour" value="#f5b700" aria-label="Button colour">
+            <span class="bdg" id="advBadge"></span>
+            <button type="button" class="btn" id="advFix">Fix it</button>
+            <button type="button" class="btn" id="advApply">Apply to preview</button>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="roles-sec">
+  <div class="sec-head"><h2>Colour roles: the same names in every template</h2><p>Templates never hard-code colours. They use a fixed set of roles, which the engine provides as CSS variables. This is what makes one scheme work in any template.</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Role</th><th>Used for</th><th>Rule the generator enforces</th></tr></thead>
+    <tbody>
+      <tr><td><code>bg</code></td><td>Page background</td><td>Body text on it ≥ 4.5:1 (WCAG AA)</td></tr>
+      <tr><td><code>surface</code></td><td>Cards, product tiles, panels</td><td>Text on it ≥ 4.5:1; visibly different from <code>bg</code></td></tr>
+      <tr><td><code>text</code>, <code>muted</code></td><td>Headings and body; prices, hints, secondary text</td><td><code>text</code> ≥ 4.5:1, <code>muted</code> ≥ 4.5:1 for small text</td></tr>
+      <tr><td><code>accent</code>, <code>on-accent</code></td><td>Buttons, links, badges; the text on buttons</td><td><code>on-accent</code> on <code>accent</code> ≥ 4.5:1; the button stands out from <code>bg</code> (≥ 3:1)</td></tr>
+      <tr><td><code>head</code>, <code>head-text</code></td><td>The header bar behind the logo</td><td>The logo's main colour stays visible on it (≥ 2:1, or a badge behind the logo)</td></tr>
+      <tr><td><code>border</code>, <code>image-tint</code></td><td>Dividers; the placeholder behind product photos</td><td>Derived; no rule</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="recipes">
+  <div class="sec-head"><h2>Recipes: what the template developer writes</h2><p>A recipe describes a look in terms of the brand colour, not a fixed palette. Each template ships 2–4 of them in <code>template.json</code>. The <code>/parameterize-template</code> skill proposes them from the design, and the developer adjusts.</p></div>
+  <div class="grid g2">
+    <pre><code>"colours": {
+  "recipes": [
+    { "id": "clean", "name": "Clean white",
+      "bg": "neutral 99", "surface": "neutral 96",
+      "text": "neutral 20", "accent": "brand",
+      "head": "bg" },
+    { "id": "tint", "name": "Soft brand tint",
+      "bg": "brand 97 soft", "surface": "brand 93 soft",
+      "text": "brand 22 soft", "accent": "brand",
+      "head": "brand 92 soft" },
+    { "id": "bold", "name": "Bold header",
+      "bg": "neutral 99", "accent": "brand",
+      "head": "accent" }
+  ],
+  "default": "clean"
+}</code></pre>
+    <div class="card">
+      <h3>How to read it</h3>
+      <ul>
+        <li><b>brand</b> is the owner's colour, nudged lighter or darker only as far as readability needs.</li>
+        <li><b>brand 97 soft</b> is the same hue at lightness 97 out of 100, with only a little colour: a gentle tint.</li>
+        <li><b>neutral</b> is a grey with a faint hint of the brand hue, so whites and greys feel part of the brand.</li>
+        <li><b>head: accent</b> paints the header in the brand colour itself.</li>
+      </ul>
+      <p>The owner never sees this. They see cards named "Clean white", "Soft brand tint" and so on, already filled with their colours.</p>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="sec-head"><h2>How the generator works</h2><p>It runs in the owner's browser, inside the template editor, so suggestions appear instantly. The server repeats the readability check when the design is published.</p></div>
+  <div class="grid g2">
+    <div class="card"><h3>1 · Read the logo</h3><p>The logo is shrunk to a small grid of pixels. Transparent pixels and the background are ignored, and similar colours are grouped. The result is the logo's 2–4 main colours, ranked by area and colourfulness. Black, white and grey parts are kept for the logo checks, but aren't offered as brand colours. The dashboard already does a basic version of this for the store's accent colour (<code>logoColours.ts</code>).</p></div>
+    <div class="card"><h3>2 · Build tones of each colour</h3><p>For each brand colour, the generator builds a ladder of the same hue from very dark to very light (tones 0–100). This uses <b>Material Color Utilities</b>, the open-source library behind Android's "colours from your wallpaper". Its colour space keeps lightness even across hues, so "tone 40" is equally dark for red and yellow. That keeps the contrast rules dependable.</p></div>
+    <div class="card"><h3>3 · Fill the recipes and check</h3><p>Every recipe is filled with every brand colour. Each result goes through the checks in the roles table: text contrast, button contrast, logo visibility. A scheme that fails is first adjusted, by nudging the shade the smallest amount that passes, and dropped only if that doesn't work.</p></div>
+    <div class="card"><h3>4 · Rank and show</h3><p>The ranking favours the logo's main colour, then schemes whose button colour stays closest to it, then a variety of recipes. A scheme that needed a big nudge (for example yellow turned to mustard) is marked as such. A logo that would fade into the header drops lower in the list. The top 4–6 are shown as cards with the shop's own products in the preview.</p></div>
+  </div>
+  <div class="callout info" style="margin-top:14px"><b>Logos with no colour</b>Black, white or grey logos have no hue to borrow. Then the cards show neutral recipes plus three safe accent colours (blue, teal and amber), and the owner can pick their own.</div>
+</section>
+
+<section id="approval">
+  <div class="sec-head"><h2>Catching bad templates before approval</h2><p>When a template version is uploaded, the pipeline runs every recipe against 12 sample brand colours. The results appear next to the version in the admin portal, so the admin sees weak spots before any customer does. This is the strip for the template chosen in the demo.</p></div>
+  <div class="strip" id="strip"></div>
+  <div class="legend"><span><b style="color:var(--green-text)">✓</b> works as is</span><span><b style="color:var(--warn)">~</b> works after a big shade change: the shop may not look like its brand</span><span><b style="color:var(--danger)">✗</b> can't be made readable: blocks approval</span></div>
+  <div class="term" style="margin-top:14px"><span class="dim">$ npm run check -- clean-store</span>
+<span class="ok">✓</span> colours: 3 recipes × 12 sample brands, all readable
+<span class="dim">~</span> "Bold header" + yellow: button shade changed a lot (tone 80 → 45)
+<span class="ok">✓</span> report attached to the version for the admin</div>
+  <p class="hint" style="margin-top:10px">Proposal: a recipe that can't be made readable for some colour blocks approval; "~" results are warnings the admin can accept. Whether the logo stays visible depends on the real logo, so that check happens in the owner's editor.</p>
+</section>
+
+<section id="others">
+  <div class="sec-head"><h2>How others handle it</h2><p>Nobody in this space leaves owners alone with five free colour pickers. The common answers are schemes instead of single colours, and generating them from one seed colour.</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Product</th><th>What they do</th><th>What we take from it</th></tr></thead>
+    <tbody>
+      <tr><td><b>Shopify</b></td><td>Themes define <i>colour schemes</i>: sets of background, text and button colours. Each section of the shop picks a scheme. Merchants edit the schemes by hand; nothing comes from the logo and contrast is up to them.</td><td>Schemes, not loose colours. We add the logo and the checks.</td></tr>
+      <tr><td><b>Squarespace</b></td><td>The owner sets a small site palette of about five colours. Squarespace derives light and dark "colour themes" from it, and sections choose a theme, never an individual colour.</td><td>A few inputs, many derived looks; sections stay consistent.</td></tr>
+      <tr><td><b>Android (Material You)</b></td><td>One seed colour, taken from the wallpaper, generates a complete scheme of tonal palettes with contrast built in. The engine is open source.</td><td>The generator itself: Material Color Utilities (TypeScript, Apache 2.0).</td></tr>
+      <tr><td><b>Canva, Coolors, Adobe Color</b></td><td>Brand kits store brand colours; generators suggest palettes from a photo or from colour-harmony rules (complementary, analogous colours).</td><td>Brand colours saved once and reused everywhere; palette from an image.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="hint" style="margin-top:10px">Sources: <a href="https://help.shopify.com/en/manual/online-store/themes/theme-structure/color-scheme">Shopify colour schemes</a> · <a href="https://www.paigebrunton.com/blog/squarespace-site-styles-editor">Squarespace style editor guide</a> · <a href="https://github.com/material-foundation/material-color-utilities/">Material Color Utilities</a> · <a href="https://material.io/blog/science-of-color-design">The science of colour and design (Material)</a></p>
+</section>
+
+<section id="changes">
+  <div class="sec-head"><h2>What changes, where</h2><p>Built as part of the template platform, mostly in wave 1 (SDK and editor) and wave 2 (pipeline checks).</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Where</th><th>Change</th></tr></thead>
+    <tbody>
+      <tr><td><b>storeease-templates</b></td><td><code>template.json</code> gets <code>colours.recipes</code>; templates use only the role variables. The skill proposes recipes and refuses hard-coded colours. <code>npm run check</code> runs the 12-colour test.</td></tr>
+      <tr><td><b>Template SDK</b></td><td>The role CSS variables (<code>--se-bg</code>, <code>--se-accent</code>…), the recipe format, and the scheme builder, shared by the editor and the pipeline.</td></tr>
+      <tr><td><b>Dashboard</b></td><td>Store settings: brand colours from the logo, editable. Template editor: suggestion cards, own colour with logo chips, advanced exact button colour with contrast badge and Fix it.</td></tr>
+      <tr><td><b>Admin portal</b></td><td>The colour report strip next to each version, before approval.</td></tr>
+      <tr><td><b>Backend</b></td><td>Stores the brand colours (store settings) and the chosen scheme (the owner's template design: recipe, seed, optional exact accent). Recomputes contrast on publish and refuses an unreadable scheme.</td></tr>
+      <tr><td><b>Unchanged</b></td><td>Versions, Private templates, the ₹999 rule, the publish flow.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="decisions">
+  <div class="sec-head"><h2>Decisions for review</h2><p>All proposed; nothing is decided yet. Feedback welcome on any row.</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Topic</th><th>Proposal</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td><b>What the owner picks</b></td><td>One brand colour (from the logo or their own). Not a colour per element.</td><td><span class="chip c-warn">proposed</span></td></tr>
+      <tr><td><b>Suggestions</b></td><td>4–6 cards per template, made from the logo's colours × the template's recipes, already checked</td><td><span class="chip c-warn">proposed</span></td></tr>
+      <tr><td><b>Recipes per template</b></td><td>2–4, at least one light; dark templates may be dark-only</td><td><span class="chip c-warn">proposed</span></td></tr>
+      <tr><td><b>Where it's saved</b></td><td>Brand colours in Store settings, shared by all templates; the chosen recipe per template design, so switching templates keeps the brand</td><td><span class="chip c-warn">proposed</span></td></tr>
+      <tr><td><b>Unreadable text</b></td><td>Can't be published; the editor offers Fix it. Smaller issues (a fading logo) are warnings.</td><td><span class="chip c-warn">open: block or warn?</span></td></tr>
+      <tr><td><b>Exact button colour</b></td><td>Available to every plan, or Premium only?</td><td><span class="chip c-warn">open</span></td></tr>
+      <tr><td><b>Second brand colour</b></td><td>Not now; recipes use one colour. Add later if templates need a secondary accent.</td><td><span class="chip c-warn">proposed</span></td></tr>
+      <tr><td><b>Library</b></td><td>Material Color Utilities (open source, TypeScript) for tones and the colour space</td><td><span class="chip c-warn">proposed</span></td></tr>
+    </tbody>
+  </table></div>
+  <nav class="pager" aria-label="Next and previous page"><a href="template-platform.html">← Template platform</a><a href="google-login.html">Google login →</a></nav>
+  <footer class="foot">Proposal for review, not built. Source of truth for building it: the team's context repo (<code>plans/brand-colours.md</code>).</footer>
+</section>
+</main>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  // ---------- colour maths (OKLab / OKLCH, WCAG contrast) ----------
+  const toLin = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  const toGam = (c) => (c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055);
+  const hexToRgb = (h) => { h = h.replace('#', ''); if (h.length === 3) h = h.split('').map((x) => x + x).join(''); const n = parseInt(h, 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+  const rgbToHex = (r, g, b) => '#' + [r, g, b].map((v) => Math.round(Math.min(255, Math.max(0, v))).toString(16).padStart(2, '0')).join('');
+  function rgbToOklab(r, g, b) {
+    r = toLin(r / 255); g = toLin(g / 255); b = toLin(b / 255);
+    const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+    const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+    const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+    return [0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s, 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s, 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s];
+  }
+  function oklabToLinear(L, a, b) {
+    const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
+    const m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
+    const s = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+    return [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s, -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s];
+  }
+  const inGamut = (rgb) => rgb.every((v) => v >= -0.0005 && v <= 1.0005);
+  // OKLCH → hex, reducing chroma until the colour exists in sRGB
+  function lch(L, C, h) {
+    L = Math.min(1, Math.max(0, L));
+    let lo = 0, hi = C, rgb = oklabToLinear(L, C * Math.cos(h), C * Math.sin(h));
+    if (!inGamut(rgb)) {
+      for (let i = 0; i < 18; i++) { const mid = (lo + hi) / 2; const t = oklabToLinear(L, mid * Math.cos(h), mid * Math.sin(h)); if (inGamut(t)) lo = mid; else hi = mid; }
+      rgb = oklabToLinear(L, lo * Math.cos(h), lo * Math.sin(h));
+    }
+    return rgbToHex(...rgb.map((v) => toGam(Math.min(1, Math.max(0, v))) * 255));
+  }
+  function toLch(hex) { const [L, a, b] = rgbToOklab(...hexToRgb(hex)); return { L, C: Math.hypot(a, b), h: Math.atan2(b, a) }; }
+  function lum(hex) { const [r, g, b] = hexToRgb(hex).map((v) => toLin(v / 255)); return 0.2126 * r + 0.7152 * g + 0.0722 * b; }
+  function contrast(a, b) { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+  function dist(a, b) { const p = rgbToOklab(...hexToRgb(a)), q = rgbToOklab(...hexToRgb(b)); return Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]); }
+
+  // The button colour: the brand colour, nudged lighter or darker only as far as readability needs.
+  function fitAccent(seedHex, bg) {
+    const s = toLch(seedHex);
+    let best = null;
+    for (let L = 0.12; L <= 0.97; L += 0.01) {
+      const acc = lch(L, s.C, s.h);
+      const onLight = '#ffffff', onDark = lch(0.2, Math.min(s.C, 0.04), s.h);
+      const on = contrast(acc, onLight) >= contrast(acc, onDark) ? onLight : onDark;
+      if (contrast(acc, on) < 4.5 || contrast(acc, bg) < 3) continue;
+      const d = Math.abs(L - s.L);
+      if (!best || d < best.d) best = { acc, on, d, L };
+    }
+    if (!best) return { acc: seedHex, on: '#ffffff', drift: 1, ok: false };
+    return { acc: best.acc, on: best.on, drift: best.d, ok: true, fromL: s.L, toL: best.L };
+  }
+
+  // ---------- recipes ----------
+  const R = {
+    clean: { name: 'Clean white', build(s) {
+      const n = (L, c = 0.006) => lch(L, c, s.h);
+      const bg = n(0.99, 0.003), a = fitAccent(s.hex, bg);
+      return { bg, surface: n(0.965), text: n(0.24, 0.02), muted: n(0.47, 0.02), border: n(0.9), head: bg, headtext: n(0.24, 0.02), img: lch(0.9, Math.min(s.C, 0.05), s.h), acc: a.acc, onacc: a.on, fit: a };
+    } },
+    tint: { name: 'Soft brand tint', build(s) {
+      const t = (L, c) => lch(L, Math.min(s.C, c), s.h);
+      const bg = t(0.975, 0.025), a = fitAccent(s.hex, bg);
+      return { bg, surface: t(0.94, 0.04), text: t(0.25, 0.06), muted: t(0.45, 0.05), border: t(0.88, 0.04), head: t(0.92, 0.05), headtext: t(0.25, 0.06), img: t(0.86, 0.07), acc: a.acc, onacc: a.on, fit: a };
+    } },
+    bold: { name: 'Bold header', build(s) {
+      const n = (L, c = 0.006) => lch(L, c, s.h);
+      const bg = n(0.99, 0.003), a = fitAccent(s.hex, bg);
+      return { bg, surface: n(0.965), text: n(0.24, 0.02), muted: n(0.47, 0.02), border: n(0.9), head: a.acc, headtext: a.on, img: lch(0.9, Math.min(s.C, 0.05), s.h), acc: a.acc, onacc: a.on, fit: a };
+    } },
+    dark: { name: 'Dark with brand accent', build(s) {
+      const t = (L, c) => lch(L, Math.min(s.C, c), s.h);
+      const bg = t(0.19, 0.025), a = fitAccent(s.hex, bg);
+      return { bg, surface: t(0.25, 0.035), text: t(0.96, 0.01), muted: t(0.78, 0.02), border: t(0.33, 0.03), head: t(0.15, 0.025), headtext: t(0.96, 0.01), img: t(0.35, 0.06), acc: a.acc, onacc: a.on, fit: a };
+    } },
+    darkBold: { name: 'Dark, brand header', build(s) {
+      const t = (L, c) => lch(L, Math.min(s.C, c), s.h);
+      const bg = t(0.19, 0.025), a = fitAccent(s.hex, bg);
+      return { bg, surface: t(0.25, 0.035), text: t(0.96, 0.01), muted: t(0.78, 0.02), border: t(0.33, 0.03), head: a.acc, headtext: a.on, img: t(0.35, 0.06), acc: a.acc, onacc: a.on, fit: a };
+    } },
+  };
+  const TEMPLATES = {
+    clean: { name: 'Clean Store', recipes: ['clean', 'tint', 'bold'], font: "'Manrope',system-ui,sans-serif", r: '8px', note: 'Clean Store offers three light recipes.' },
+    d2c: { name: 'Modern D2C', recipes: ['tint', 'bold', 'dark'], font: "'Bricolage Grotesque','Manrope',sans-serif", r: '999px', note: 'Modern D2C offers two light recipes and one dark one.' },
+    dark: { name: 'Dark Futuristic', recipes: ['dark', 'darkBold'], font: "'Bricolage Grotesque','Manrope',sans-serif", r: '6px', note: 'Dark Futuristic is designed dark only, so its recipes are both dark.' },
+  };
+
+  // ---------- sample logos ----------
+  const svg = (inner) => 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">${inner}</svg>`);
+  const LOGOS = [
+    { id: 'pickles', name: "Priya's Pickles", headline: 'Pickles from Priya’s kitchen', items: ['Mango pickle', 'Lime pickle', 'Garlic chutney'],
+      src: svg('<circle cx="80" cy="66" r="46" fill="#c62828"/><path d="M80 24c18 6 26 22 22 38-14-4-24-16-22-38z" fill="#2e7d32"/><text x="80" y="140" font-family="Georgia,serif" font-size="22" font-weight="700" text-anchor="middle" fill="#3e2723">Priya’s</text>'),
+      known: [['#c62828', 40], ['#2e7d32', 12], ['#3e2723', 10]] },
+    { id: 'bakes', name: 'Sunny Bakes', headline: 'Fresh bakes every morning', items: ['Banana bread', 'Nankhatai', 'Brownies'],
+      src: svg('<circle cx="80" cy="64" r="34" fill="#f5b700"/><g stroke="#f5b700" stroke-width="8" stroke-linecap="round"><path d="M80 12v12M80 104v12M28 64h12M120 64h12M43 27l9 9M108 92l9 9M117 27l-9 9M52 92l-9 9"/></g><text x="80" y="146" font-family="Arial,sans-serif" font-size="22" font-weight="800" text-anchor="middle" fill="#6d4c41">SUNNY</text>'),
+      known: [['#f5b700', 40], ['#6d4c41', 12]] },
+    { id: 'indigo', name: 'Indigo Threads', headline: 'Hand-block printed sarees', items: ['Indigo saree', 'Dupatta', 'Cotton kurta'],
+      src: svg('<rect x="22" y="18" width="116" height="100" rx="18" fill="#1a237e"/><path d="M40 92 L80 40 L120 92" fill="none" stroke="#c9a227" stroke-width="10" stroke-linejoin="round"/><text x="80" y="148" font-family="Georgia,serif" font-size="20" font-weight="700" text-anchor="middle" fill="#1a237e">INDIGO</text>'),
+      known: [['#1a237e', 45], ['#c9a227', 12]] },
+    { id: 'rose', name: 'Rose Candles', headline: 'Soy candles, poured by hand', items: ['Rose candle', 'Jasmine jar', 'Gift set'],
+      src: svg('<path d="M80 22c26 20 34 40 34 58a34 34 0 0 1-68 0c0-18 8-38 34-58z" fill="#f4a6b8"/><rect x="58" y="86" width="44" height="40" rx="6" fill="#6a1b4d"/><text x="80" y="150" font-family="Georgia,serif" font-size="20" text-anchor="middle" fill="#6a1b4d">rose</text>'),
+      known: [['#f4a6b8', 35], ['#6a1b4d', 20]] },
+    { id: 'mono', name: 'Kala Studio', headline: 'Black and white prints', items: ['Print A4', 'Poster', 'Postcards'],
+      src: svg('<rect x="30" y="20" width="100" height="100" fill="#111"/><circle cx="80" cy="70" r="28" fill="#fff"/><text x="80" y="148" font-family="Arial,sans-serif" font-size="20" font-weight="800" text-anchor="middle" fill="#111">KALA</text>'),
+      known: [['#111111', 50]] },
+  ];
+
+  // ---------- logo colour extraction ----------
+  function extract(img) {
+    const N = 64, cv = document.createElement('canvas');
+    cv.width = N; cv.height = N;
+    const ctx = cv.getContext('2d', { willReadFrequently: true });
+    const k = Math.min(N / img.naturalWidth, N / img.naturalHeight) || 1;
+    const w = Math.max(1, Math.round(img.naturalWidth * k)), h = Math.max(1, Math.round(img.naturalHeight * k));
+    ctx.drawImage(img, 0, 0, w, h);
+    const d = ctx.getImageData(0, 0, w, h).data;
+    // the background: the most common opaque colour along the border (logos on white or a flat colour)
+    const border = new Map();
+    const px = (x, y) => { const i = (y * w + x) * 4; return d[i + 3] < 200 ? null : rgbToHex(d[i], d[i + 1], d[i + 2]); };
+    for (let x = 0; x < w; x++) for (const y of [0, h - 1]) { const c = px(x, y); if (c) border.set(c, (border.get(c) || 0) + 1); }
+    for (let y = 0; y < h; y++) for (const x of [0, w - 1]) { const c = px(x, y); if (c) border.set(c, (border.get(c) || 0) + 1); }
+    let bgHex = null, bgN = 0; for (const [c, n] of border) if (n > bgN) { bgHex = c; bgN = n; }
+    if (bgN < (w + h)) bgHex = null; // only when the border is mostly one colour
+    const bins = new Map(); let total = 0;
+    for (let i = 0; i < d.length; i += 4) {
+      if (d[i + 3] < 128) continue;
+      const hex = rgbToHex(d[i], d[i + 1], d[i + 2]);
+      if (bgHex && dist(hex, bgHex) < 0.06) continue;
+      const [L, a, b] = rgbToOklab(d[i], d[i + 1], d[i + 2]);
+      const key = Math.round(L / 0.07) + ':' + Math.round(a / 0.035) + ':' + Math.round(b / 0.035);
+      const e = bins.get(key) || { n: 0, L: 0, a: 0, b: 0 }; e.n++; e.L += L; e.a += a; e.b += b; bins.set(key, e); total++;
+    }
+    let cols = [...bins.values()].map((e) => { const L = e.L / e.n, a = e.a / e.n, b = e.b / e.n; return { hex: rgbToHex(...oklabToLinear(L, a, b).map((v) => toGam(Math.min(1, Math.max(0, v))) * 255)), n: e.n, C: Math.hypot(a, b) }; }).sort((x, y) => y.n - x.n);
+    const merged = [];
+    for (const c of cols) { const m = merged.find((x) => dist(x.hex, c.hex) < 0.09); if (m) m.n += c.n; else merged.push({ ...c }); }
+    return merged.filter((c) => c.n / total > 0.03).slice(0, 6).map((c) => ({ hex: c.hex, share: c.n / total, C: c.C }));
+  }
+
+  // ---------- state ----------
+  const S = { logo: LOGOS[0], palette: [], seeds: [], tpl: 'clean', schemes: [], chosen: null };
+  const $ = (id) => document.getElementById(id);
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const SAFE_SEEDS = ['#1d4ed8', '#0f766e', '#b45309'];
+
+  function makeScheme(seedHex, recipeId) {
+    const s = { ...toLch(seedHex), hex: seedHex };
+    const r = R[recipeId], c = r.build(s);
+    const main = S.palette[0];
+    const logoC = main ? contrast(main.hex, c.head) : 3;
+    const checks = {
+      text: contrast(c.text, c.bg), muted: contrast(c.muted, c.bg), surfaceText: contrast(c.text, c.surface),
+      button: contrast(c.onacc, c.acc), buttonVsBg: contrast(c.acc, c.bg), logo: logoC,
+    };
+    const readable = c.fit.ok && checks.text >= 4.5 && checks.muted >= 4.5 && checks.surfaceText >= 4.5 && checks.button >= 4.5;
+    const logoOk = logoC >= 2;
+    const share = (S.palette.find((x) => x.hex === seedHex) || { share: 0 }).share; // the logo's main colour first
+    const score = 100 + share * 30 - dist(c.acc, seedHex) * 160 - (logoOk ? 0 : 25) - (c.fit.drift > 0.15 ? 10 : 0);
+    return { seed: seedHex, recipe: recipeId, recipeName: r.name, c, checks, readable, logoOk, drift: c.fit.drift, score };
+  }
+
+  function computeSuggestions() {
+    const tpl = TEMPLATES[S.tpl];
+    const all = [];
+    for (const seed of S.seeds) for (const rid of tpl.recipes) { const sc = makeScheme(seed, rid); if (sc.readable) all.push(sc); }
+    all.sort((a, b) => b.score - a.score);
+    // variety: at most two cards per recipe and per seed, up to six
+    const out = [], perR = {}, perS = {};
+    for (const sc of all) { if ((perR[sc.recipe] || 0) >= 2 || (perS[sc.seed] || 0) >= 2) continue; out.push(sc); perR[sc.recipe] = (perR[sc.recipe] || 0) + 1; perS[sc.seed] = (perS[sc.seed] || 0) + 1; if (out.length >= 6) break; }
+    for (const sc of all) { if (out.length >= Math.min(4, all.length)) break; if (!out.includes(sc)) out.push(sc); }
+    return out;
+  }
+
+  function vars(c) {
+    const t = TEMPLATES[S.tpl];
+    return `--s-bg:${c.bg};--s-surface:${c.surface};--s-text:${c.text};--s-muted:${c.muted};--s-border:${c.border};--s-head:${c.head};--s-headtext:${c.headtext};--s-acc:${c.acc};--s-onacc:${c.onacc};--s-img:${c.img};--s-font:${t.font};--r:${t.r}`;
+  }
+  function shopHtml(c, mini) {
+    const L = S.logo;
+    const items = L.items.map((n, i) => `<div class="p"><i></i><div><b>${esc(n)}</b><span>₹${[249, 199, 349][i]}</span></div></div>`).join('');
+    return `<div class="shopv${mini ? ' mini' : ''}" style="${vars(c)}" aria-hidden="${mini ? 'true' : 'false'}">
+      <div class="hd"><img src="${L.src}" alt=""><b>${esc(L.name)}</b><span>Shop · About · Cart</span></div>
+      <div class="hero"><h4>${esc(L.headline)}</h4><p>Made at home in small batches. Cash on delivery or UPI.</p><span class="cta">Shop now</span></div>
+      <div class="grid3">${items}</div><div class="ft">© ${esc(L.name)} · Powered by StoreEase</div></div>`;
+  }
+  function badgesHtml(sc) {
+    const b = [`<span class="bdg ok">Readable ✓</span>`];
+    b.push(sc.logoOk ? `<span class="bdg ok">Logo clear ✓</span>` : `<span class="bdg wa">Logo fades</span>`);
+    if (sc.drift > 0.15) b.push(`<span class="bdg wa">Shade changed</span>`);
+    return `<div class="badges">${b.join('')}</div>`;
+  }
+
+  // ---------- render ----------
+  function renderLogos() {
+    $('logos').innerHTML = LOGOS.map((l) => `<button type="button" class="logo-pick" data-id="${l.id}" aria-pressed="${S.logo.id === l.id}" aria-label="${esc(l.name)} logo"><img src="${l.src}" alt=""></button>`).join('')
+      + `<button type="button" class="logo-pick up" id="upBtn" aria-pressed="${S.logo.id === 'own'}">Upload<br>your logo</button>`;
+  }
+  function renderPalette() {
+    $('logoImg').src = S.logo.src;
+    $('logoPal').innerHTML = S.palette.map((c) => `<span class="c${S.seeds.includes(c.hex) ? ' seed' : ''}"><i style="background:${c.hex}"></i>${c.hex}<span>${Math.round(c.share * 100)}%</span></span>`).join('') || '<span class="hint">No colours found.</span>';
+    const chromatic = S.palette.filter((c) => c.C > 0.045);
+    $('palNote').innerHTML = chromatic.length
+      ? 'Colours with a green ring become brand colours. Black, white and grey parts are only used to check the logo stays visible.'
+      : 'This logo has no colour of its own, so the suggestions use three safe accent colours (blue, teal and amber). The owner can pick their own below.';
+    $('ownChips').innerHTML = '<span class="hint">From your logo:</span>' + (chromatic.length ? chromatic : S.palette).slice(0, 4).map((c) => `<button type="button" class="chipbtn" data-hex="${c.hex}"><i style="background:${c.hex}"></i>${c.hex}</button>`).join('');
+  }
+  function renderTpl() {
+    $('tplSeg').innerHTML = Object.entries(TEMPLATES).map(([id, t]) => `<button type="button" data-id="${id}" aria-pressed="${S.tpl === id}">${t.name}</button>`).join('');
+    const t = TEMPLATES[S.tpl];
+    $('tplNote').textContent = t.note + ' Recipes: ' + t.recipes.map((r) => R[r].name).join(', ') + '.';
+  }
+  function renderSugs() {
+    S.schemes = computeSuggestions();
+    if (!S.chosen || !S.schemes.some((s) => s.seed === S.chosen.seed && s.recipe === S.chosen.recipe)) S.chosen = S.schemes[0] || null;
+    $('sugs').innerHTML = S.schemes.map((sc, i) => {
+      const c = sc.c; const on = S.chosen && S.chosen.seed === sc.seed && S.chosen.recipe === sc.recipe && !S.chosen.custom;
+      return `<button type="button" class="sug" data-i="${i}" aria-pressed="${on}">${shopHtml(c, true)}
+        <div class="meta"><b>${esc(sc.recipeName)}</b><span class="hint">from ${sc.seed}${i === 0 ? ' · best match' : ''}</span>
+        <div class="sw5">${[c.head, c.bg, c.surface, c.acc, c.text].map((x) => `<i style="background:${x}"></i>`).join('')}</div>${badgesHtml(sc)}</div></button>`;
+    }).join('');
+    renderBig();
+    renderStrip();
+  }
+  function renderBig() {
+    const sc = S.chosen;
+    if (!sc) { $('bigPreview').innerHTML = ''; $('checks').innerHTML = ''; $('roles').innerHTML = ''; return; }
+    $('bigPreview').innerHTML = shopHtml(sc.c, false);
+    const k = sc.checks, f = (x) => x.toFixed(1) + ':1';
+    const row = (ok, label, detail) => `<div><span>${ok === true ? '✅' : ok === 'warn' ? '⚠️' : '❌'}</span><span><span class="k">${label}</span> <span class="hint">${detail}</span></span></div>`;
+    const drift = sc.drift > 0.15;
+    $('checks').innerHTML = `<b>${esc(sc.recipeName)}${sc.custom ? ' · exact button colour' : ''}</b>`
+      + row(k.text >= 4.5, 'Body text', `${f(k.text)} (needs 4.5:1)`)
+      + row(k.muted >= 4.5, 'Prices and hints', `${f(k.muted)} (needs 4.5:1)`)
+      + row(k.button >= 4.5, 'Button text', `${f(k.button)} (needs 4.5:1)`)
+      + row(k.buttonVsBg >= 3, 'Button stands out', `${f(k.buttonVsBg)} against the page (needs 3:1)`)
+      + row(sc.logoOk ? true : 'warn', 'Logo on the header', sc.logoOk ? `${f(k.logo)}, clearly visible` : `${f(k.logo)}: may fade; offer a light badge behind the logo`)
+      + row(drift ? 'warn' : true, 'True to the brand', drift ? `the button had to move from ${sc.seed} to ${sc.c.acc} to be readable` : `button ${sc.c.acc}, close to ${sc.seed}`);
+    const c = sc.c;
+    $('roles').innerHTML = '<b style="font-size:.86rem">The scheme</b>' + [['bg', c.bg], ['surface', c.surface], ['text', c.text], ['muted', c.muted], ['accent', c.acc], ['on-accent', c.onacc], ['head', c.head]].map(([n, v]) => `<div><i style="background:${v}"></i><code>--se-${n}</code><code>${v}</code></div>`).join('');
+  }
+  const TEST = [['red', '#d32f2f'], ['orange', '#ef6c00'], ['yellow', '#fbc02d'], ['lime', '#9ccc65'], ['green', '#2e7d32'], ['teal', '#00897b'], ['sky', '#4fc3f7'], ['navy', '#1a237e'], ['purple', '#6a1b9a'], ['pink', '#f48fb1'], ['brown', '#6d4c41'], ['black', '#111111']];
+  function renderStrip() {
+    const t = TEMPLATES[S.tpl];
+    const head = `<div class="r"><b>${esc(t.name)}</b>${TEST.map(([n, h]) => `<span class="hues"><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${h};vertical-align:-1px"></i> ${n}</span>`).join('')}</div>`;
+    const saved = S.palette;
+    S.palette = []; // the strip tests the recipe with each colour; the logo check needs a real logo, so it's left to the owner's preview
+    const rows = t.recipes.map((rid) => `<div class="r"><b>${esc(R[rid].name)}</b>${TEST.map(([n, h]) => {
+      const sc = makeScheme(h, rid);
+      const mark = !sc.readable ? ['✗', 'var(--danger)'] : sc.drift > 0.15 ? ['~', 'var(--warn)'] : ['✓', 'var(--green-text)'];
+      return `<div class="tile" style="${vars(sc.c)}" title="${esc(R[rid].name)} + ${n}"><div class="th"></div><div class="tb"><span>Buy</span></div><em style="color:${mark[1]};background:var(--paper);border-radius:6px;padding:0 3px">${mark[0]}</em></div>`;
+    }).join('')}</div>`).join('');
+    S.palette = saved;
+    $('strip').innerHTML = head + rows;
+  }
+
+  // ---------- loading a logo ----------
+  function setLogo(logo) {
+    S.logo = logo; S.chosen = null;
+    renderLogos();
+    const img = new Image();
+    img.onload = () => {
+      let pal = null;
+      try { pal = extract(img); } catch (e) { pal = null; }
+      if (!pal || !pal.length) pal = (logo.known || []).map(([hex, w]) => ({ hex, share: w / 100, C: toLch(hex).C }));
+      S.palette = pal;
+      const chromatic = pal.filter((c) => c.C > 0.045).slice(0, 3).map((c) => c.hex);
+      S.seeds = chromatic.length ? chromatic : SAFE_SEEDS.slice();
+      renderPalette(); renderSugs();
+    };
+    img.onerror = () => { $('palNote').textContent = "That image couldn't be read. Try a PNG or JPG."; };
+    img.src = logo.src;
+  }
+
+  // ---------- events ----------
+  $('logos').addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.id === 'upBtn') { $('upload').click(); return; }
+    const l = LOGOS.find((x) => x.id === b.dataset.id); if (l) setLogo(l);
+  });
+  $('upload').addEventListener('change', () => {
+    const f = $('upload').files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => setLogo({ id: 'own', name: 'Your shop', headline: 'Your products, your colours', items: ['Product one', 'Product two', 'Product three'], src: r.result, known: [] });
+    r.readAsDataURL(f);
+  });
+  $('tplSeg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; S.tpl = b.dataset.id; S.chosen = null; renderTpl(); renderSugs(); });
+  $('sugs').addEventListener('click', (e) => { const b = e.target.closest('.sug'); if (!b) return; S.chosen = S.schemes[+b.dataset.i]; [...$('sugs').children].forEach((x) => x.setAttribute('aria-pressed', String(x === b))); renderBig(); });
+
+  const validHex = (v) => /^#[0-9a-f]{6}$/i.test(v);
+  function useOwn(hex) {
+    if (!validHex(hex)) return;
+    $('ownColour').value = hex; $('ownHex').value = hex;
+    S.seeds = [hex].concat(S.seeds.filter((x) => x !== hex)).slice(0, 3);
+    S.chosen = null; renderPalette(); renderSugs();
+    // put the owner's colour first: pick the best card made from it
+    const mine = S.schemes.find((s) => s.seed === hex) || makeScheme(hex, TEMPLATES[S.tpl].recipes[0]);
+    S.chosen = mine; renderSugs();
+    document.getElementById('sugs').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  $('ownColour').addEventListener('input', () => { $('ownHex').value = $('ownColour').value; });
+  $('ownHex').addEventListener('input', () => { if (validHex($('ownHex').value)) $('ownColour').value = $('ownHex').value; });
+  $('ownApply').addEventListener('click', () => useOwn($('ownColour').value));
+  $('ownChips').addEventListener('click', (e) => { const b = e.target.closest('.chipbtn'); if (b) useOwn(b.dataset.hex); });
+
+  function advState() {
+    const hex = $('advColour').value, on = contrast(hex, '#ffffff') >= contrast(hex, '#141414') ? '#ffffff' : '#141414', r = contrast(hex, on);
+    const b = $('advBadge');
+    b.className = 'bdg ' + (r >= 4.5 ? 'ok' : r >= 3 ? 'wa' : 'bad');
+    b.textContent = r >= 4.5 ? `Button text readable (${r.toFixed(1)}:1)` : `Button text too faint (${r.toFixed(1)}:1, needs 4.5)`;
+    return { hex, on, r };
+  }
+  $('advColour').addEventListener('input', advState);
+  $('advFix').addEventListener('click', () => {
+    const base = S.chosen ? S.chosen.c.bg : '#ffffff';
+    const f = fitAccent($('advColour').value, base);
+    $('advColour').value = f.acc; advState();
+  });
+  $('advApply').addEventListener('click', () => {
+    if (!S.chosen) return;
+    const { hex, on } = advState();
+    const c = { ...S.chosen.c, acc: hex, onacc: on };
+    if (S.chosen.c.head === S.chosen.c.acc) { c.head = hex; c.headtext = on; }
+    const sc = { ...S.chosen, c, custom: true };
+    sc.checks = { ...sc.checks, button: contrast(on, hex), buttonVsBg: contrast(hex, c.bg), logo: S.palette[0] ? contrast(S.palette[0].hex, c.head) : 3 };
+    sc.logoOk = sc.checks.logo >= 2; sc.drift = dist(hex, sc.seed) > 0.12 ? 0.2 : 0;
+    S.chosen = sc; [...$('sugs').children].forEach((x) => x.setAttribute('aria-pressed', 'false')); renderBig();
+  });
+
+  renderTpl(); advState(); setLogo(LOGOS[0]);
+})();
+</script>
+</body>
+</html>

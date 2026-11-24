@@ -9,6 +9,7 @@ open `index.html` in a browser, no build step or server needed (fonts load from 
 | `product.html` | A store's life, order statuses, features for owners, shoppers and the team |
 | `pricing.html` | Plans, add-ons, trial / grace / suspension timeline, instant vs Razorpay mode |
 | `template-platform.html` | **Planned:** the template platform: owner editor, frozen versions, Private templates, plans, the developer skill, build plan (source of truth: the private `storeease-context` repo, `plans/template-platform.md`) |
+| `brand-colours.html` | **Proposal for review:** colour schemes for templates: suggestions from the shop's logo, template recipes, readability checks, the approval test (with a demo); source of truth: the private `storeease-context` repo, `plans/brand-colours.md` |
 | `google-login.html` | **Planned:** Continue with Google for owners and staff: how it works (with a demo), what changes, safety, decisions (source of truth: the private `storeease-context` repo, `plans/google-login.md`) |
 | `architecture.html` | The five websites, the AWS diagram, why every app calls `/api` on its own host |
 | `tenancy.html` | How stores are kept apart (RLS), DB roles, logins, the login hand-over, staff roles |
