@@ -116,6 +116,35 @@
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.84rem;color:var(--muted)}
 .term{background:#0b1233;color:#d7f5e1;border-radius:14px;padding:12px 14px;font-family:var(--mono);font-size:.82rem;line-height:1.6;overflow-x:auto;white-space:pre}
 .term .dim{color:#8f9bc6}.term .ok{color:#5fd37f}
+/* plain-language explainers */
+.cx{display:grid;gap:6px}
+.cx div{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:center;font-size:.86rem}
+.cx b.s{border-radius:10px;padding:8px 10px;font-weight:800;text-align:center;border:1px solid rgb(0 0 0 / .12)}
+.ladder{display:flex;gap:3px}
+.ladder i{flex:1;height:34px;border-radius:6px;border:1px solid rgb(0 0 0 / .1)}
+.ladder i.me{outline:3px solid var(--fg);outline-offset:2px}
+.ladder-ends{display:flex;justify-content:space-between;font-size:.76rem;font-weight:800;color:var(--muted)}
+.jobwrap{position:relative}
+.jobwrap .dot{position:absolute;width:24px;height:24px;border-radius:50%;background:var(--fg);color:var(--bg);font-weight:800;font-size:.8rem;display:grid;place-items:center;transform:translate(-50%,-50%);box-shadow:0 0 0 3px var(--bg);pointer-events:none}
+.jobwrap .hit{outline:3px dashed #e11d74 !important;outline-offset:-3px}
+.joblist{display:grid;gap:8px;align-content:start}
+.joblist button{font:inherit;text-align:left;color:var(--fg);background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:8px 12px;cursor:pointer;display:grid;grid-template-columns:26px 1fr;gap:4px 8px}
+.joblist button b.n{grid-row:span 2;width:24px;height:24px;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;font-size:.8rem}
+.joblist button span{font-size:.84rem;color:var(--muted)}
+.joblist button[aria-pressed="true"]{border-color:#e11d74;background:var(--tint)}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.trio figure{margin:0;display:grid;gap:6px}
+.trio figcaption{font-size:.84rem;color:var(--muted)}
+@media (max-width:760px){.trio{grid-template-columns:1fr}}
+.howsteps{display:grid;gap:14px}
+.hs{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;background:var(--paper);border:2px solid var(--line);border-radius:18px;padding:14px 16px}
+.hs > div{display:grid;gap:8px;min-width:0}
+.hs p{color:var(--muted);font-size:.94rem}
+.fixdemo{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.fixdemo figure{margin:0;display:grid;gap:4px;justify-items:start;font-size:.8rem;color:var(--muted)}
+.fixdemo .b{border-radius:999px;padding:8px 18px;font-weight:800}
+details.dev{margin-top:14px;border:2px dashed var(--line);border-radius:14px;padding:10px 14px}
+details.dev summary{font-weight:800;cursor:pointer;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -243,72 +272,94 @@
   </div>
 </section>
 
-<section id="roles-sec">
-  <div class="sec-head"><h2>Colour roles: the same names in every template</h2><p>Templates never hard-code colours. They use a fixed set of roles, which the engine provides as CSS variables. This is what makes one scheme work in any template.</p></div>
-  <div class="tbl"><table>
-    <thead><tr><th>Role</th><th>Used for</th><th>Rule the generator enforces</th></tr></thead>
-    <tbody>
-      <tr><td><code>bg</code></td><td>Page background</td><td>Body text on it ≥ 4.5:1 (WCAG AA)</td></tr>
-      <tr><td><code>surface</code></td><td>Cards, product tiles, panels</td><td>Text on it ≥ 4.5:1; visibly different from <code>bg</code></td></tr>
-      <tr><td><code>text</code>, <code>muted</code></td><td>Headings and body; prices, hints, secondary text</td><td><code>text</code> ≥ 4.5:1, <code>muted</code> ≥ 4.5:1 for small text</td></tr>
-      <tr><td><code>accent</code>, <code>on-accent</code></td><td>Buttons, links, badges; the text on buttons</td><td><code>on-accent</code> on <code>accent</code> ≥ 4.5:1; the button stands out from <code>bg</code> (≥ 3:1)</td></tr>
-      <tr><td><code>head</code>, <code>head-text</code></td><td>The header bar behind the logo</td><td>The logo's main colour stays visible on it (≥ 2:1, or a badge behind the logo)</td></tr>
-      <tr><td><code>border</code>, <code>image-tint</code></td><td>Dividers; the placeholder behind product photos</td><td>Derived; no rule</td></tr>
-    </tbody>
-  </table></div>
+<section id="words">
+  <div class="sec-head"><h2>Five colour words, in plain language</h2><p>You only need these to follow the rest of this page.</p></div>
+  <div class="grid g2">
+    <div class="card"><h3>Contrast: can you read it?</h3><p>How different two colours are in <b>lightness</b>. Dark text on a white page is very different, so it's easy to read. Light grey text on white is too similar, so it's hard to read. Contrast is measured as a number: <b>4.5 or more</b> is the international minimum for normal text (the WCAG accessibility standard). Bigger is easier.</p><div class="cx" id="cxDemo"></div></div>
+    <div class="card"><h3>Shade: the same colour, lighter or darker</h3><p>Every colour can be made lighter or darker while staying "the same colour", like paint with white or black mixed in. Below are shades of Priya's red, from dark to light; the ringed one is the red in her logo. The very light shades are good for backgrounds, the dark ones for text.</p><div class="ladder" id="ladderDemo"></div><div class="ladder-ends"><span>darker</span><span>lighter</span></div></div>
+    <div class="card"><h3>Brand colour</h3><p>The main colour of the shop's logo, like Priya's red. It's the colour shoppers remember. StoreEase finds it in the logo automatically, and the owner can change it.</p></div>
+    <div class="card"><h3>Colour scheme</h3><p>The full set of colours one shop uses: one for the page, one for the cards, one for the text, one for the buttons, one for the header. A good scheme has one strong colour (the brand) and calm colours everywhere else.</p></div>
+  </div>
+</section>
+
+<section id="jobs">
+  <div class="sec-head"><h2>Every colour on a shop page has a job</h2><p>Look at any shop page and the colours do five jobs. Tap a job to see where it is. <b>Every template uses the same five jobs</b>, which is why a colour scheme made for one template works in all of them.</p></div>
+  <div class="big">
+    <div class="jobwrap" id="jobWrap"></div>
+    <div class="joblist" id="jobList" role="group" aria-label="Colour jobs"></div>
+  </div>
+  <details class="dev"><summary>For developers: the role names</summary>
+    <div class="tbl" style="margin-top:10px"><table>
+      <thead><tr><th>Job</th><th>Role (CSS variable)</th><th>Rule the generator enforces</th></tr></thead>
+      <tbody>
+        <tr><td>Page</td><td><code>--se-bg</code></td><td>Text on it ≥ 4.5:1</td></tr>
+        <tr><td>Cards</td><td><code>--se-surface</code>, <code>--se-border</code></td><td>Text on it ≥ 4.5:1; visibly different from the page</td></tr>
+        <tr><td>Text</td><td><code>--se-text</code>, <code>--se-muted</code> (prices, hints)</td><td>Both ≥ 4.5:1</td></tr>
+        <tr><td>Button</td><td><code>--se-accent</code>, <code>--se-on-accent</code> (the button's text)</td><td>Button text ≥ 4.5:1; button vs page ≥ 3:1</td></tr>
+        <tr><td>Header</td><td><code>--se-head</code>, <code>--se-head-text</code></td><td>The logo's main colour vs the header ≥ 2:1, else a light badge behind the logo</td></tr>
+      </tbody>
+    </table></div>
+  </details>
 </section>
 
 <section id="recipes">
-  <div class="sec-head"><h2>Recipes: what the template developer writes</h2><p>A recipe describes a look in terms of the brand colour, not a fixed palette. Each template ships 2–4 of them in <code>template.json</code>. The <code>/parameterize-template</code> skill proposes them from the design, and the developer adjusts.</p></div>
-  <div class="grid g2">
-    <pre><code>"colours": {
+  <div class="sec-head"><h2>Recipes: the designer decides which job gets which colour</h2><p>A template's designer doesn't pick fixed colours. They write 2–4 <b>recipes</b>: short instructions such as "page white, buttons in the brand colour, header white". StoreEase fills in each shop's brand colour. So the designer keeps control of the look, and every shop still gets its own colours.</p></div>
+  <div class="card" style="max-width:none">
+    <h3>One recipe, three different shops</h3>
+    <p>The recipe <b>"Clean white"</b>: page and header white, cards light grey, text near-black, <b>buttons in the brand colour</b>. Below it is applied to three logos. Notice the pink: the logo's pale pink would barely show on a white page, so StoreEase used a deeper shade of the same pink for the button, with dark text on it.</p>
+    <div class="trio" id="trioShops"></div>
+  </div>
+  <div class="card" style="max-width:none;margin-top:14px">
+    <h3>One shop, three recipes</h3>
+    <p>Clean Store's three recipes, all filled with Priya's red. These are the cards an owner would see.</p>
+    <div class="trio" id="trioRecipes"></div>
+  </div>
+  <details class="dev"><summary>For developers: how a recipe is written in <code>template.json</code></summary>
+    <pre style="margin-top:10px"><code>"colours": {
   "recipes": [
     { "id": "clean", "name": "Clean white",
       "bg": "neutral 99", "surface": "neutral 96",
-      "text": "neutral 20", "accent": "brand",
-      "head": "bg" },
+      "text": "neutral 20", "accent": "brand", "head": "bg" },
     { "id": "tint", "name": "Soft brand tint",
       "bg": "brand 97 soft", "surface": "brand 93 soft",
-      "text": "brand 22 soft", "accent": "brand",
-      "head": "brand 92 soft" },
+      "text": "brand 22 soft", "accent": "brand", "head": "brand 92 soft" },
     { "id": "bold", "name": "Bold header",
-      "bg": "neutral 99", "accent": "brand",
-      "head": "accent" }
+      "bg": "neutral 99", "accent": "brand", "head": "accent" }
   ],
   "default": "clean"
 }</code></pre>
-    <div class="card">
-      <h3>How to read it</h3>
-      <ul>
-        <li><b>brand</b> is the owner's colour, nudged lighter or darker only as far as readability needs.</li>
-        <li><b>brand 97 soft</b> is the same hue at lightness 97 out of 100, with only a little colour: a gentle tint.</li>
-        <li><b>neutral</b> is a grey with a faint hint of the brand hue, so whites and greys feel part of the brand.</li>
-        <li><b>head: accent</b> paints the header in the brand colour itself.</li>
-      </ul>
-      <p>The owner never sees this. They see cards named "Clean white", "Soft brand tint" and so on, already filled with their colours.</p>
-    </div>
-  </div>
+    <p class="hint" style="margin-top:8px"><b>brand</b> = the brand colour, nudged only as far as readability needs · <b>brand 97 soft</b> = the same hue at lightness 97/100 with little colour (a tint) · <b>neutral</b> = a grey with a faint hint of the brand hue · <b>head: accent</b> = header in the brand colour. The <code>/parameterize-template</code> skill proposes recipes from the design.</p>
+  </details>
 </section>
 
 <section id="how">
-  <div class="sec-head"><h2>How the generator works</h2><p>It runs in the owner's browser, inside the template editor, so suggestions appear instantly. The server repeats the readability check when the design is published.</p></div>
-  <div class="grid g2">
-    <div class="card"><h3>1 · Read the logo</h3><p>The logo is shrunk to a small grid of pixels. Transparent pixels and the background are ignored, and similar colours are grouped. The result is the logo's 2–4 main colours, ranked by area and colourfulness. Black, white and grey parts are kept for the logo checks, but aren't offered as brand colours. The dashboard already does a basic version of this for the store's accent colour (<code>logoColours.ts</code>).</p></div>
-    <div class="card"><h3>2 · Build tones of each colour</h3><p>For each brand colour, the generator builds a ladder of the same hue from very dark to very light (tones 0–100). This uses <b>Material Color Utilities</b>, the open-source library behind Android's "colours from your wallpaper". Its colour space keeps lightness even across hues, so "tone 40" is equally dark for red and yellow. That keeps the contrast rules dependable.</p></div>
-    <div class="card"><h3>3 · Fill the recipes and check</h3><p>Every recipe is filled with every brand colour. Each result goes through the checks in the roles table: text contrast, button contrast, logo visibility. A scheme that fails is first adjusted, by nudging the shade the smallest amount that passes, and dropped only if that doesn't work.</p></div>
-    <div class="card"><h3>4 · Rank and show</h3><p>The ranking favours the logo's main colour, then schemes whose button colour stays closest to it, then a variety of recipes. A scheme that needed a big nudge (for example yellow turned to mustard) is marked as such. A logo that would fade into the header drops lower in the list. The top 4–6 are shown as cards with the shop's own products in the preview.</p></div>
+  <div class="sec-head"><h2>What StoreEase does, step by step</h2><p>All of this happens in a split second in the owner's editor. Nobody has to know any colour theory.</p></div>
+  <div class="howsteps">
+    <div class="hs"><span class="stepno">1</span><div><h3>Find the logo's colours</h3><p>It looks at the logo's pixels, ignores the background, and groups similar colours. The biggest colourful one becomes the brand colour. Black, white and grey are ignored as brand colours (they're used only to check the logo stays visible).</p><div class="extract" id="howLogo"></div></div></div>
+    <div class="hs"><span class="stepno">2</span><div><h3>Make lighter and darker shades</h3><p>For each brand colour it makes a ladder of shades, from almost black to almost white. Recipes then pick from the ladder: "a very light shade for the page", "the logo's own shade for buttons".</p><div class="ladder" id="howLadder"></div></div></div>
+    <div class="hs"><span class="stepno">3</span><div><h3>Fill in every recipe</h3><p>Each recipe of the chosen template is filled with each brand colour. Two brand colours × three recipes = six possible schemes.</p></div></div>
+    <div class="hs"><span class="stepno">4</span><div><h3>Check everything can be read, and fix it if not</h3><p>Every piece of text is checked against the colour behind it (contrast, 4.5 or more). If a button is too pale to read, StoreEase doesn't give up: it picks the nearest darker shade of the <i>same</i> colour. Only if nothing works is the scheme thrown away.</p><div class="fixdemo" id="fixDemo"></div></div></div>
+    <div class="hs"><span class="stepno">5</span><div><h3>Show the best 4–6</h3><p>Schemes using the logo's main colour come first, then the ones that needed the smallest change. A scheme where the logo would blend into the header goes lower and is marked. The owner taps one, as in <a href="#try">Try it</a>.</p></div></div>
   </div>
-  <div class="callout info" style="margin-top:14px"><b>Logos with no colour</b>Black, white or grey logos have no hue to borrow. Then the cards show neutral recipes plus three safe accent colours (blue, teal and amber), and the owner can pick their own.</div>
+  <details class="dev"><summary>For developers: the libraries and rules</summary>
+    <div class="prose" style="margin-top:10px;display:grid;gap:8px;max-width:78ch">
+      <p><b>Extract:</b> the logo is drawn to ~64×64 pixels; transparent pixels and the background (the most common border colour) are skipped; colours are grouped by OKLab distance and ranked by area. The dashboard's <code>logoColours.ts</code> already does a basic version; it moves to the SDK.</p>
+      <p><b>Shades:</b> <a href="https://github.com/material-foundation/material-color-utilities/">Material Color Utilities</a> (Google, open source, TypeScript, Apache 2.0), the engine behind Android's colours from the wallpaper. It builds a tonal palette (tone 0–100) in the HCT colour space, where a tone is equally light for every hue, so the contrast rules behave the same for red and for yellow.</p>
+      <p><b>Fix:</b> a failing button colour moves along its tonal palette to the nearest tone that passes. <b>Rank:</b> logo share, then distance between the button colour and the brand colour; penalties for a fading logo and a big shade change; at most two cards per recipe and per colour.</p>
+      <p><b>Where:</b> in the browser (instant); the backend recomputes contrast on publish and refuses an unreadable scheme. This page's demo uses a simplified version (OKLCH) of the same idea.</p>
+    </div>
+  </details>
+  <div class="callout info" style="margin-top:14px"><b>Logos with no colour</b>A black, white or grey logo has no colour to borrow. Then the cards use calm grey recipes plus three safe colours (blue, teal and amber), and the owner can pick their own.</div>
 </section>
 
 <section id="approval">
-  <div class="sec-head"><h2>Catching bad templates before approval</h2><p>When a template version is uploaded, the pipeline runs every recipe against 12 sample brand colours. The results appear next to the version in the admin portal, so the admin sees weak spots before any customer does. This is the strip for the template chosen in the demo.</p></div>
+  <div class="sec-head"><h2>Catching bad templates before approval</h2><p>Before a new template version can go live, an automatic check tries each of its recipes with 12 very different brand colours (red, yellow, navy, pink…). The admin sees the result next to the version, so a template that only looks good in blue is caught before any customer gets it. This is the check for the template chosen in <a href="#try">Try it</a>: each small tile is "header + page + button".</p></div>
   <div class="strip" id="strip"></div>
   <div class="legend"><span><b style="color:var(--green-text)">✓</b> works as is</span><span><b style="color:var(--warn)">~</b> works after a big shade change: the shop may not look like its brand</span><span><b style="color:var(--danger)">✗</b> can't be made readable: blocks approval</span></div>
-  <div class="term" style="margin-top:14px"><span class="dim">$ npm run check -- clean-store</span>
+  <details class="dev" style="margin-top:14px"><summary>For developers: the same check on the command line</summary><div class="term" style="margin-top:10px"><span class="dim">$ npm run check -- clean-store</span>
 <span class="ok">✓</span> colours: 3 recipes × 12 sample brands, all readable
 <span class="dim">~</span> "Bold header" + yellow: button shade changed a lot (tone 80 → 45)
-<span class="ok">✓</span> report attached to the version for the admin</div>
+<span class="ok">✓</span> report attached to the version for the admin</div></details>
   <p class="hint" style="margin-top:10px">Proposal: a recipe that can't be made readable for some colour blocks approval; "~" results are warnings the admin can accept. Whether the logo stays visible depends on the real logo, so that check happens in the owner's editor.</p>
 </section>
 
@@ -534,14 +585,14 @@
     return out;
   }
 
-  function vars(c) {
-    const t = TEMPLATES[S.tpl];
+  function vars(c, tplId) {
+    const t = TEMPLATES[tplId || S.tpl];
     return `--s-bg:${c.bg};--s-surface:${c.surface};--s-text:${c.text};--s-muted:${c.muted};--s-border:${c.border};--s-head:${c.head};--s-headtext:${c.headtext};--s-acc:${c.acc};--s-onacc:${c.onacc};--s-img:${c.img};--s-font:${t.font};--r:${t.r}`;
   }
-  function shopHtml(c, mini) {
-    const L = S.logo;
+  function shopHtml(c, mini, logo, tplId) {
+    const L = logo || S.logo;
     const items = L.items.map((n, i) => `<div class="p"><i></i><div><b>${esc(n)}</b><span>₹${[249, 199, 349][i]}</span></div></div>`).join('');
-    return `<div class="shopv${mini ? ' mini' : ''}" style="${vars(c)}" aria-hidden="${mini ? 'true' : 'false'}">
+    return `<div class="shopv${mini ? ' mini' : ''}" style="${vars(c, tplId)}" aria-hidden="${mini ? 'true' : 'false'}">
       <div class="hd"><img src="${L.src}" alt=""><b>${esc(L.name)}</b><span>Shop · About · Cart</span></div>
       <div class="hero"><h4>${esc(L.headline)}</h4><p>Made at home in small batches. Cash on delivery or UPI.</p><span class="cta">Shop now</span></div>
       <div class="grid3">${items}</div><div class="ft">© ${esc(L.name)} · Powered by StoreEase</div></div>`;
@@ -689,7 +740,57 @@
     S.chosen = sc; [...$('sugs').children].forEach((x) => x.setAttribute('aria-pressed', 'false')); renderBig();
   });
 
-  renderTpl(); advState(); setLogo(LOGOS[0]);
+  // ---------- the plain-language explainers ----------
+  function renderExplainers() {
+    const red = '#c62828', P = LOGOS[0];
+    const saved = S.palette; S.palette = [];
+    // contrast examples
+    const ex = [['#1a1a1a', '#ffffff', 'Dark text on white'], ['#a3a3a3', '#ffffff', 'Light grey on white'], ['#ffffff', '#f5b700', 'White on yellow'], [fitAccent('#f5b700', '#ffffff').on, fitAccent('#f5b700', '#ffffff').acc, 'Dark text on deeper yellow (mustard)']];
+    $('cxDemo').innerHTML = ex.map(([fg, bg, t]) => { const r = contrast(fg, bg), ok = r >= 4.5; return `<div><b class="s" style="color:${fg};background:${bg}">Shop now</b><span><b>${r.toFixed(1)}</b> ${ok ? '✅ easy to read' : '❌ too faint'} <span class="hint">· ${t}</span></span></div>`; }).join('');
+    // shade ladder
+    const s0 = toLch(red), steps = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.88, 0.94, 0.98];
+    let near = 0; steps.forEach((L, i) => { if (Math.abs(L - s0.L) < Math.abs(steps[near] - s0.L)) near = i; });
+    const ladder = steps.map((L, i) => `<i class="${i === near ? 'me' : ''}" style="background:${i === near ? red : lch(L, s0.C, s0.h)}" title="${i === near ? 'the logo red' : ''}"></i>`).join('');
+    $('ladderDemo').innerHTML = ladder; $('howLadder').innerHTML = ladder;
+    $('howLogo').innerHTML = `<div class="lg"><img src="${P.src}" alt="Priya's Pickles logo"></div><div class="pal">${P.known.map(([h, w]) => `<span class="c${h === red ? ' seed' : ''}"><i style="background:${h}"></i>${h}<span>${h === red ? 'brand colour' : h === '#3e2723' ? 'near-black' : 'second colour'}</span></span>`).join('')}</div>`;
+    // fix demo
+    const y = fitAccent('#f5b700', '#ffffff');
+    $('fixDemo').innerHTML = `<figure><span class="b" style="background:#f5b700;color:#fff">Shop now</span>Sunny's yellow: ${contrast('#ffffff', '#f5b700').toFixed(1)} ❌</figure><span style="font-weight:800">→</span><figure><span class="b" style="background:${y.acc};color:${y.on}">Shop now</span>nearest readable shade: ${contrast(y.on, y.acc).toFixed(1)} ✅</figure>`;
+    // one recipe, three shops
+    const trio = [[LOGOS[0], '#c62828'], [LOGOS[2], '#1a237e'], [LOGOS[3], '#f4a6b8']];
+    $('trioShops').innerHTML = trio.map(([L, h]) => { const sc = makeScheme(h, 'clean'); return `<figure>${shopHtml(sc.c, true, L, 'clean')}<figcaption><b>${esc(L.name)}</b> · brand ${h}${dist(sc.c.acc, h) > 0.03 ? ` → button ${sc.c.acc}` : ''}</figcaption></figure>`; }).join('');
+    $('trioRecipes').innerHTML = ['clean', 'tint', 'bold'].map((rid) => { const sc = makeScheme(red, rid); return `<figure>${shopHtml(sc.c, true, P, 'clean')}<figcaption><b>${R[rid].name}</b></figcaption></figure>`; }).join('');
+    // the five jobs
+    const jc = makeScheme(red, 'tint').c;
+    $('jobWrap').innerHTML = shopHtml(jc, false, P, 'clean');
+    S.palette = saved;
+    const JOBS = [['.hd span', 'Header', 'the bar behind the logo and the menu'], ['.shopv', 'Page', 'the background of the whole page'], ['.p', 'Cards', 'the boxes around each product'], ['.hero h4', 'Text', 'headings, product names, prices'], ['.cta', 'Button', 'what shoppers tap: the strongest colour on the page']];
+    $('jobList').innerHTML = JOBS.map(([, t, d], i) => `<button type="button" data-i="${i}" aria-pressed="false"><b class="n">${i + 1}</b><b>${t}</b><span>${d}</span></button>`).join('');
+    const place = () => {
+      const wrap = $('jobWrap'), box = wrap.getBoundingClientRect();
+      wrap.querySelectorAll('.dot').forEach((d) => d.remove());
+      JOBS.forEach(([sel], i) => {
+        const el = wrap.querySelector(sel); if (!el) return;
+        let r = el.getBoundingClientRect(), x, yy;
+        if (i === 3) { const rg = document.createRange(); rg.selectNodeContents(el); r = rg.getBoundingClientRect(); }
+        if (i === 0) { x = r.left - box.left - 18; yy = r.top - box.top + r.height / 2; }          // left of the menu
+        else if (i === 1) { x = r.right - box.left - 24; yy = r.top - box.top + r.height * 0.42; } // empty page area
+        else if (i === 2) { x = r.right - box.left - 16; yy = r.top - box.top + 14; }             // corner of a card
+        else { x = r.right - box.left + 18; yy = r.top - box.top + r.height / 2; }                // right of the text / button
+        const d = document.createElement('span'); d.className = 'dot'; d.textContent = i + 1; d.style.left = x + 'px'; d.style.top = yy + 'px'; wrap.appendChild(d);
+      });
+    };
+    place(); window.addEventListener('resize', place);
+    $('jobList').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      const on = b.getAttribute('aria-pressed') !== 'true';
+      $('jobList').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', 'false'));
+      $('jobWrap').querySelectorAll('.hit').forEach((x) => x.classList.remove('hit'));
+      if (on) { b.setAttribute('aria-pressed', 'true'); const sel = +b.dataset.i === 0 ? '.hd' : JOBS[+b.dataset.i][0]; $('jobWrap').querySelectorAll(sel).forEach((x) => x.classList.add('hit')); }
+    });
+  }
+
+  renderTpl(); advState(); setLogo(LOGOS[0]); renderExplainers();
 })();
 </script>
 </body>
